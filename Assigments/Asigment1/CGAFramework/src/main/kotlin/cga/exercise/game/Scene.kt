@@ -81,7 +81,7 @@ class Scene(private val window: GameWindow) {
        */
 
         //____Object Loader____
-        var OBJLoaderResult = OBJLoader.loadOBJ("assets/models/sphere.obj")
+        var OBJLoaderResult = OBJLoader.loadOBJ("THUniGrafik/Assigments/Asigment2/CGAFramework/assets/models/ground.obj")
 
         var tempVer = OBJLoaderResult.objects[0].meshes[0].vertexData
         var tempInd = OBJLoaderResult.objects[0].meshes[0].indexData
