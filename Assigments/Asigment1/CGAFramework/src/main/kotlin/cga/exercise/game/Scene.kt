@@ -7,6 +7,10 @@ import cga.framework.GLError
 import cga.framework.GameWindow
 import cga.framework.OBJLoader
 import org.lwjgl.opengl.GL11.*
+import org.lwjgl.opengl.GL20.*
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
+import java.nio.FloatBuffer
 
 
 /**
@@ -17,10 +21,9 @@ class Scene(private val window: GameWindow) {
     //private var house:Mesh;
     //private var initials:Mesh;
     private var objectMesh:Mesh;
-
     //scene setup
     init {
-        staticShader = ShaderProgram("assets/shaders/simple_vert.glsl", "assets/shaders/simple_frag.glsl")
+        staticShader = ShaderProgram("F:\\SSD_Programirung\\THUniGrafik\\THUniGrafik\\Assigments\\Asigment2\\CGAFramework\\assets\\shaders\\tron_vert.glsl", "F:\\SSD_Programirung\\THUniGrafik\\THUniGrafik\\Assigments\\Asigment2\\CGAFramework\\assets\\shaders\\tron_frag.glsl")
 
         //initial opengl state
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f); GLError.checkThrow()
@@ -81,7 +84,7 @@ class Scene(private val window: GameWindow) {
        */
 
         //____Object Loader____
-        var OBJLoaderResult = OBJLoader.loadOBJ("THUniGrafik/Assigments/Asigment2/CGAFramework/assets/models/ground.obj")
+        var OBJLoaderResult = OBJLoader.loadOBJ("F:\\SSD_Programirung\\THUniGrafik\\THUniGrafik\\Assigments\\Asigment2\\CGAFramework\\assets\\models\\ground.obj")
 
         var tempVer = OBJLoaderResult.objects[0].meshes[0].vertexData
         var tempInd = OBJLoaderResult.objects[0].meshes[0].indexData
@@ -93,10 +96,25 @@ class Scene(private val window: GameWindow) {
         objectMesh = Mesh(tempVer,tempInd,atributesOfObject);
     }
 
+    fun toFloatBuffer(v: FloatArray): FloatBuffer? {
+        val buf: ByteBuffer = ByteBuffer.allocateDirect(v.size * 4)
+        buf.order(ByteOrder.nativeOrder())
+        val buffer: FloatBuffer = buf.asFloatBuffer()
+        buffer.put(v)
+        buffer.position(0)
+        return buffer
+    }
     fun render(dt: Float, t: Float) {
+        var matrixFloate = floatArrayOf(0.4f,0.5f,0.4f,0.6f,
+            0.4f,0.5f,0.4f,0.6f,
+            0.4f,0.5f,0.4f,0.6f,
+            0.4f,0.5f,0.4f,0.6f)
+
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
         staticShader.use()
+        var uniformLocation = glGetUniformLocation(0,"model_matrix")
         objectMesh.render()
+        glUniformMatrix4fv(uniformLocation, false,toFloatBuffer(matrixFloate))
         //house.render();
         //initials.render()
     }
