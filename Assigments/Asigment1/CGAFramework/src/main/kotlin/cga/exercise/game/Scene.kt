@@ -6,6 +6,9 @@ import cga.exercise.components.shader.ShaderProgram
 import cga.framework.GLError
 import cga.framework.GameWindow
 import cga.framework.OBJLoader
+import org.joml.Math.cos
+import org.joml.Math.sin
+import org.joml.Matrix4f
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL20.*
 import java.nio.ByteBuffer
@@ -21,6 +24,7 @@ class Scene(private val window: GameWindow) {
     //private var house:Mesh;
     //private var initials:Mesh;
     private var objectMesh:Mesh;
+    private var matrix = Matrix4f()
     //scene setup
     init {
         staticShader = ShaderProgram("F:\\SSD_Programirung\\THUniGrafik\\THUniGrafik\\Assigments\\Asigment2\\CGAFramework\\assets\\shaders\\tron_vert.glsl", "F:\\SSD_Programirung\\THUniGrafik\\THUniGrafik\\Assigments\\Asigment2\\CGAFramework\\assets\\shaders\\tron_frag.glsl")
@@ -105,10 +109,11 @@ class Scene(private val window: GameWindow) {
         return buffer
     }
     fun render(dt: Float, t: Float) {
-        var matrixFloate = floatArrayOf(0.4f,0.5f,0.4f,0.6f,
-            0.4f,0.5f,0.4f,0.6f,
-            0.4f,0.5f,0.4f,0.6f,
-            0.4f,0.5f,0.4f,0.6f)
+        var matrixFloate = floatArrayOf(
+            1.0f,0.0f,0.0f,0.0f,
+            0.0f,cos(90.0f),-sin(90.0f),0.0f,
+            0.0f,sin(90.0f),cos(90.0f),0.0f,
+            0.0f,0.0f,0.0f,1.0f)
 
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
         staticShader.use()
