@@ -114,6 +114,11 @@ class Scene(private val window: GameWindow) {
             0.0f,cos(90.0f),-sin(90.0f),0.0f,
             0.0f,sin(90.0f),cos(90.0f),0.0f,
             0.0f,0.0f,0.0f,1.0f)
+        matrix = Matrix4f(
+            1.0f,0.0f,0.0f,0.0f,
+            0.0f,cos(90.0f),-sin(90.0f),0.0f,
+            0.0f,sin(90.0f),cos(90.0f),0.0f,
+            0.0f,0.0f,0.0f,1.0f)
 
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
         staticShader.use()
