@@ -9,8 +9,8 @@ open class Transformable(private var modelMatrix: Matrix4f = Matrix4f(), var par
      * @return modelMatrix
      */
     override fun getModelMatrix(): Matrix4f {
-        // TODO implement
-        throw NotImplementedError()
+        return var modelMatrix = getModelMatrix()
+        //throw NotImplementedError()
     }
 
     /**
@@ -20,8 +20,8 @@ open class Transformable(private var modelMatrix: Matrix4f = Matrix4f(), var par
      * @return world modelMatrix
      */
     override fun getWorldModelMatrix(): Matrix4f {
-        // TODO implement
-        throw NotImplementedError()
+        return var tempMatrix = getModelMatrix().mul(getWorldModelMatrix())
+        //throw NotImplementedError()
     }
 
     /**
@@ -31,7 +31,8 @@ open class Transformable(private var modelMatrix: Matrix4f = Matrix4f(), var par
      * @param roll radiant angle around z-axis ccw
      */
     override fun rotate(pitch: Float, yaw: Float, roll: Float) {
-        // TODO implement
+        var angel = AxisAngle4d(pitch,yaw,roll)
+        modelMatrix.rotate(angel)
         throw NotImplementedError()
     }
 
