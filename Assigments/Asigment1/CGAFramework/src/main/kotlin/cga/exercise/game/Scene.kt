@@ -26,7 +26,7 @@ class Scene(private val window: GameWindow) {
     private var matrix = Matrix4f()
     //scene setup
     init {
-        staticShader = ShaderProgram("Assigments/Asigment2/CGAFramework/assets/shaders/tron_vert.glsl", "Assigments/Asigment2/CGAFramework/assets/shaders/tron_frag.glsl")
+        staticShader = ShaderProgram("THUniGrafik/Assigments/Asigment2/CGAFramework/assets/shaders/tron_vert.glsl", "THUniGrafik/Assigments/Asigment2/CGAFramework/assets/shaders/tron_frag.glsl")
 
         //initial opengl state
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f); GLError.checkThrow()

@@ -33,7 +33,7 @@ open class Transformable(private var modelMatrix: Matrix4f = Matrix4f(), var par
     override fun rotate(pitch: Float, yaw: Float, roll: Float) {
         var angel = AxisAngle4d(pitch,yaw,roll)
         modelMatrix.rotate(angel)
-        throw NotImplementedError()
+        //throw NotImplementedError()
     }
 
     /**
