@@ -1,14 +1,14 @@
 #version 330 core
 
 layout(location = 0) in vec3 position;
-
+layout(location = 2) in vec3 normalsofV;
 //uniforms
-// translation object to world
 uniform mat4 model_matrix;
-
+// translation object to world
 out struct VertexData
 {
     vec3 position;
+    vec3 normalsofV;
 } vertexData;
 
 //

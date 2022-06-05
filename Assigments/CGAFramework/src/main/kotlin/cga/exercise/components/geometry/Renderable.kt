@@ -2,6 +2,7 @@ package cga.exercise.components.geometry
 
 import cga.exercise.components.shader.ShaderProgram
 
+
 class Renderable(var meshes: MutableList<Mesh> ) : IRenderable, Transformable() {
     override fun render(shaderProgram: ShaderProgram) {
 

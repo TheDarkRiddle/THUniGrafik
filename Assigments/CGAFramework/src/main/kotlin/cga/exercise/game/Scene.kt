@@ -44,8 +44,8 @@ class Scene(private val window: GameWindow) {
         objectMesh = Mesh(tempVer,tempInd,atributesOfObject);
 
         var OBJLoaderResult1 = OBJLoader.loadOBJ("assets/models/sphere.obj")
-        var tempVer1 = OBJLoaderResult.objects[0].meshes[0].vertexData
-        var tempInd1 = OBJLoaderResult.objects[0].meshes[0].indexData
+        var tempVer1 = OBJLoaderResult1.objects[0].meshes[0].vertexData
+        var tempInd1 = OBJLoaderResult1.objects[0].meshes[0].indexData
         var atributesOfObject1 = arrayOf(
             VertexAttribute(3, GL_FLOAT,32,0),
             VertexAttribute(2, GL_FLOAT,32,12),
@@ -53,6 +53,7 @@ class Scene(private val window: GameWindow) {
         )
         objectMesh1 =Mesh(tempVer1,tempInd1,atributesOfObject1)
 
+        //Erstellung der Rendabl's und anwendung der Transformationen
         planeOB = Renderable(mutableListOf<Mesh>(objectMesh));
         planeOB.rotate(org.joml.Math.toRadians(90.0f),0.0f,0.0f )
         planeOB.scale(Vector3f(0.03f))
