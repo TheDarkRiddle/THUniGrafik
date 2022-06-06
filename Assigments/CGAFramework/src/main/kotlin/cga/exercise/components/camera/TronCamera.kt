@@ -8,10 +8,10 @@ import org.joml.Matrix4f
  * fieldOfView = vertikaler Oeffnungswinkel der Kamera [90 Grad in Radiant, Angabe in Float]
  * Seitenverhältnis (aspect ratio) --- (indirekt) horizontaler Oeffnungswinkel [16.0f/9.0f]
  * Near Plane --- Entfernung der Near Plane zur Kamera [0.1f, quasi direkt vor der Linse]
-Far Plane --- Entfernung der Far Plane zur Kamera [100.0f]
+ * Far Plane --- Entfernung der Far Plane zur Kamera [100.0f]
 
  */
-class TronCamera(var fieldOfView: Float = org.joml.Math.toRadians(90.0f), var seitenverhaeltnis: Float = 16.0f, var nearPlane: Float = 0.1f, var farPlan: Float= 100.0f) : ICamera, Transformable() {
+class TronCamera(var fov: Float = org.joml.Math.toRadians(90.0f), var aspect: Float = 16.0f, var nearPlane: Float = 0.1f, var farPlan: Float= 100.0f) : ICamera, Transformable() {
 
     /*
      * Calculate the ViewMatrix according the lecture
@@ -21,7 +21,8 @@ class TronCamera(var fieldOfView: Float = org.joml.Math.toRadians(90.0f), var se
      *  - up –> the direction of 'up'
      */
     override fun getCalculateViewMatrix(): Matrix4f {
-        TODO("Not yet implemented")
+        //View Matrix
+        return getModelMatrix().lookAt(getPosition(),getZAxis(),getYAxis());
     }
 
     /*
@@ -33,10 +34,12 @@ class TronCamera(var fieldOfView: Float = org.joml.Math.toRadians(90.0f), var se
      *  - zFar – far clipping plane distance
      */
     override fun getCalculateProjectionMatrix(): Matrix4f {
-        TODO("Not yet implemented")
+        //Projection Matrix
+        return getModelMatrix().perspective(fov,aspect,nearPlane,farPlan);
     }
 
     override fun bind(shader: ShaderProgram) {
-        TODO("Not yet implemented")
+        shader.setUniform("projection_matrix",getCalculateProjectionMatrix(),false)
+        shader.setUniform("view_matrix",getCalculateViewMatrix(),false)
     }
 }

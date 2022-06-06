@@ -1,20 +1,24 @@
 #version 330 core
 
 layout(location = 0) in vec3 position;
-layout(location = 2) in vec3 normalsofV;
+layout(location = 2) in vec3 normals;
+
 //uniforms
 uniform mat4 model_matrix;
-// translation object to world
+uniform mat4 view_matrix;
+uniform mat4 projection_matrix;
+
 out struct VertexData
 {
     vec3 position;
-    vec3 normalsofV;
+    vec3 normals;
 } vertexData;
 
-//
+// translation object to world
 void main(){
     vec4 pos = model_matrix * vec4(position, 1.0f);
 
-    gl_Position = vec4(pos.xy, -pos.z, 1.0f);
+    gl_Position = projection_matrix * view_matrix * model_matrix * vec4(position,1.0f);
+    //gl_Position = vec4(pos.xy, -pos.z, 1.0f);
     vertexData.position = pos.xyz;
 }
