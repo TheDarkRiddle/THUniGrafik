@@ -11,7 +11,7 @@ import org.joml.Matrix4f
  * Far Plane --- Entfernung der Far Plane zur Kamera [100.0f]
 
  */
-class TronCamera(var fov: Float = org.joml.Math.toRadians(90.0f), var aspect: Float = 16.0f, var nearPlane: Float = 0.1f, var farPlan: Float= 100.0f) : ICamera, Transformable() {
+class TronCamera(var fov: Float = org.joml.Math.toRadians(90.0f), var aspect: Float = 16.0f/9.0f, var nearPlane: Float = 0.1f, var farPlan: Float= 100.0f) : ICamera, Transformable() {
 
     /*
      * Calculate the ViewMatrix according the lecture
@@ -22,7 +22,7 @@ class TronCamera(var fov: Float = org.joml.Math.toRadians(90.0f), var aspect: Fl
      */
     override fun getCalculateViewMatrix(): Matrix4f {
         //View Matrix
-        return getModelMatrix().lookAt(getPosition(),getZAxis(),getYAxis());
+        return Matrix4f().lookAt(getWorldPosition(),getWorldPosition().sub(getWorldZAxis()),getWorldYAxis());
     }
 
     /*
@@ -35,7 +35,7 @@ class TronCamera(var fov: Float = org.joml.Math.toRadians(90.0f), var aspect: Fl
      */
     override fun getCalculateProjectionMatrix(): Matrix4f {
         //Projection Matrix
-        return getModelMatrix().perspective(fov,aspect,nearPlane,farPlan);
+        return Matrix4f().perspective(fov,aspect,nearPlane,farPlan);
     }
 
     override fun bind(shader: ShaderProgram) {

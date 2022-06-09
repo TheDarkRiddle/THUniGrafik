@@ -16,9 +16,10 @@ out struct VertexData
 
 // translation object to world
 void main(){
-    vec4 pos = model_matrix * vec4(position, 1.0f);
+    vec4 pos = view_matrix * model_matrix * vec4(position, 1.0f);
 
-    gl_Position = projection_matrix * view_matrix * model_matrix * vec4(position,1.0f);
+    gl_Position = projection_matrix * pos;
     //gl_Position = vec4(pos.xy, -pos.z, 1.0f);
     vertexData.position = pos.xyz;
+    vertexData.normals = (inverse(transpose(view_matrix * model_matrix)) * vec4(normals,0.0f)).xyz;
 }

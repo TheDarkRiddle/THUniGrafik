@@ -9,6 +9,7 @@ import cga.framework.GLError
 import cga.framework.GameWindow
 import cga.framework.OBJLoader
 import org.joml.Vector3f
+import org.lwjgl.glfw.GLFW.GLFW_KEY_W
 import org.lwjgl.opengl.GL20.*
 
 
@@ -24,7 +25,7 @@ class Scene(private val window: GameWindow) {
     private var tronCam: TronCamera;
     //scene setup
     init {
-        staticShader = ShaderProgram("assets/shaders/tron_vert.glsl", "assets/shaders/tron_frag.glsl")
+        staticShader = ShaderProgram("Assigments/CGAFramework/assets/shaders/tron_vert.glsl", "Assigments/CGAFramework/assets/shaders/tron_frag.glsl")
 
         //initial opengl state
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f); GLError.checkThrow()
@@ -37,11 +38,11 @@ class Scene(private val window: GameWindow) {
         //____ init Cam____
         tronCam = TronCamera();
         tronCam.rotate(org.joml.Math.toRadians(-20.0f),0.0f,0.0f);
-        tronCam.translate(Vector3f(0.0f,0.0f,4.0f))
+        tronCam.translate(Vector3f(0.0f,0.0f,50.0f))
 
 
         //____Object Loader____
-        var OBJLoaderResult = OBJLoader.loadOBJ("assets/models/ground.obj")
+        var OBJLoaderResult = OBJLoader.loadOBJ("Assigments/CGAFramework/assets/models/ground.obj")
         var tempVer = OBJLoaderResult.objects[0].meshes[0].vertexData
         var tempInd = OBJLoaderResult.objects[0].meshes[0].indexData
         var atributesOfObject = arrayOf(
@@ -51,7 +52,7 @@ class Scene(private val window: GameWindow) {
         )
         objectMesh = Mesh(tempVer,tempInd,atributesOfObject);
 
-        var OBJLoaderResult1 = OBJLoader.loadOBJ("assets/models/sphere.obj")
+        var OBJLoaderResult1 = OBJLoader.loadOBJ("Assigments/CGAFramework/assets/models/sphere.obj")
         var tempVer1 = OBJLoaderResult1.objects[0].meshes[0].vertexData
         var tempInd1 = OBJLoaderResult1.objects[0].meshes[0].indexData
         var atributesOfObject1 = arrayOf(
@@ -64,11 +65,11 @@ class Scene(private val window: GameWindow) {
 
         //Erstellung der Rendabl's und anwendung der Transformationen
         planeOB = Renderable(mutableListOf<Mesh>(objectMesh));
-        planeOB.rotate(org.joml.Math.toRadians(90.0f),0.0f,0.0f )
-        planeOB.scale(Vector3f(0.03f))
+        //planeOB.rotate(org.joml.Math.toRadians(90.0f),0.0f,0.0f )
+        //planeOB.scale(Vector3f(0.03f))
 
         sphereOB = Renderable(mutableListOf<Mesh>(objectMesh1));
-        sphereOB.scale(Vector3f(0.5f))
+        //sphereOB.scale(Vector3f(0.5f))
 
 
         //Normalise Vertecis
@@ -78,12 +79,13 @@ class Scene(private val window: GameWindow) {
     fun render(dt: Float, t: Float) {
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
         staticShader.use()
+        tronCam.bind(staticShader);
         planeOB.render(staticShader);
         sphereOB.render(staticShader);
     }
 
     fun update(dt: Float, t: Float) {
-        tronCam.bind(staticShader);
+        if(window.getKeyState(GLFW_KEY_W)){}
     }
 
     fun onKey(key: Int, scancode: Int, action: Int, mode: Int) {}
