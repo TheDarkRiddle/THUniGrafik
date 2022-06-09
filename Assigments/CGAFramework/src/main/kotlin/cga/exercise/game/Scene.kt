@@ -9,8 +9,9 @@ import cga.framework.GLError
 import cga.framework.GameWindow
 import cga.framework.OBJLoader
 import org.joml.Vector3f
-import org.lwjgl.glfw.GLFW.GLFW_KEY_W
+import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.opengl.GL20.*
+import javax.swing.WindowConstants
 
 
 /**
@@ -22,10 +23,10 @@ class Scene(private val window: GameWindow) {
     private var objectMesh1:Mesh;
     private var planeOB: Renderable;
     private var sphereOB: Renderable;
-    private var tronCam: TronCamera;
+    private val tronCam: TronCamera;
     //scene setup
     init {
-        staticShader = ShaderProgram("Assigments/CGAFramework/assets/shaders/tron_vert.glsl", "Assigments/CGAFramework/assets/shaders/tron_frag.glsl")
+        staticShader = ShaderProgram("assets/shaders/tron_vert.glsl", "assets/shaders/tron_frag.glsl")
 
         //initial opengl state
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f); GLError.checkThrow()
@@ -38,11 +39,12 @@ class Scene(private val window: GameWindow) {
         //____ init Cam____
         tronCam = TronCamera();
         tronCam.rotate(org.joml.Math.toRadians(-20.0f),0.0f,0.0f);
-        tronCam.translate(Vector3f(0.0f,0.0f,50.0f))
+        tronCam.translate(Vector3f(0.0f,0.0f,10.0f))
+
 
 
         //____Object Loader____
-        var OBJLoaderResult = OBJLoader.loadOBJ("Assigments/CGAFramework/assets/models/ground.obj")
+        var OBJLoaderResult = OBJLoader.loadOBJ("assets/models/ground.obj")
         var tempVer = OBJLoaderResult.objects[0].meshes[0].vertexData
         var tempInd = OBJLoaderResult.objects[0].meshes[0].indexData
         var atributesOfObject = arrayOf(
@@ -52,7 +54,7 @@ class Scene(private val window: GameWindow) {
         )
         objectMesh = Mesh(tempVer,tempInd,atributesOfObject);
 
-        var OBJLoaderResult1 = OBJLoader.loadOBJ("Assigments/CGAFramework/assets/models/sphere.obj")
+        var OBJLoaderResult1 = OBJLoader.loadOBJ("assets/models/sphere.obj")
         var tempVer1 = OBJLoaderResult1.objects[0].meshes[0].vertexData
         var tempInd1 = OBJLoaderResult1.objects[0].meshes[0].indexData
         var atributesOfObject1 = arrayOf(
@@ -69,6 +71,7 @@ class Scene(private val window: GameWindow) {
         //planeOB.scale(Vector3f(0.03f))
 
         sphereOB = Renderable(mutableListOf<Mesh>(objectMesh1));
+        tronCam.parent = sphereOB;
         //sphereOB.scale(Vector3f(0.5f))
 
 
@@ -85,7 +88,19 @@ class Scene(private val window: GameWindow) {
     }
 
     fun update(dt: Float, t: Float) {
-        if(window.getKeyState(GLFW_KEY_W)){}
+        if(window.getKeyState(GLFW_KEY_W)){
+            sphereOB.translate(Vector3f(0.0f,0.0f,-dt*8))
+        }
+        else if(window.getKeyState(GLFW_KEY_S)){
+            sphereOB.translate(Vector3f(0.0f,0.0f,dt*8))
+        }
+
+        if(window.getKeyState(GLFW_KEY_A)){
+            sphereOB.rotate(0.0f,dt*2,0.0f)
+        }
+        else if(window.getKeyState(GLFW_KEY_D)){
+            sphereOB.rotate(0.0f,-dt*2,0.0f)
+        }
     }
 
     fun onKey(key: Int, scancode: Int, action: Int, mode: Int) {}

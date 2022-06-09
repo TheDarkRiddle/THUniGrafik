@@ -160,4 +160,5 @@ open class Transformable(private var modelMatrix: Matrix4f = Matrix4f(), var par
                 wmat.m20(), wmat.m21(), wmat.m22()
         ).normalize()
     }
+
 }
