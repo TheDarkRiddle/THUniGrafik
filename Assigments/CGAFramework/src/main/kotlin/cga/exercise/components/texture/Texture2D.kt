@@ -47,18 +47,24 @@ class Texture2D(imageData: ByteBuffer, width: Int, height: Int, genMipMaps: Bool
 
     override fun processTexture(imageData: ByteBuffer, width: Int, height: Int, genMipMaps: Boolean) {
         texID = GL11.glGenTextures();
-        bind(texID);
+        bind(0);
         GL11.glTexImage2D(GL11.GL_TEXTURE_2D,0,GL11.GL_RGBA,width,height,0,GL11.GL_RGBA,GL11.GL_FLOAT,imageData);
-        GL20.glVertexAttribPointer(3,0,GL11.GL_FLOAT,false,12,0);
-        GL20.glEnableVertexAttribArray(3);
+        setTexParams(GL11.GL_REPEAT,GL11.GL_REPEAT,GL11.GL_TEXTURE_MIN_FILTER,GL11.GL_TEXTURE_MAG_FILTER);
+
     }
 
     override fun setTexParams(wrapS: Int, wrapT: Int, minFilter: Int, magFilter: Int) {
-
+        bind(0);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, wrapS);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, wrapT);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, minFilter);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, magFilter);
+        unbind();
     }
 
     override fun bind(textureUnit: Int) {
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureUnit)
+        GL13.glActiveTexture(GL13.GL_TEXTURE0 + textureUnit)
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, texID);
     }
 
     override fun unbind() {

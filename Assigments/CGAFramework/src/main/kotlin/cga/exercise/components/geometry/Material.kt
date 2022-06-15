@@ -12,5 +12,9 @@ class Material(var diff: Texture2D,
 
     fun bind(shaderProgram: ShaderProgram) {
         // todo 3.2
+        shaderProgram.setUniform("m_emit",0);
+        shaderProgram.setUniform("m_tcMultiplierX",tcMultiplier.x);
+        shaderProgram.setUniform("m_tcMultiplierY",tcMultiplier.y);
+
     }
 }
