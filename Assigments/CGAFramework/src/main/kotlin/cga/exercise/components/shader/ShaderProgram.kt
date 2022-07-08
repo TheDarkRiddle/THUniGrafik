@@ -1,5 +1,6 @@
 package cga.exercise.components.shader
 
+import cga.exercise.components.texture.Texture2D
 import org.joml.*
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL11
@@ -15,7 +16,10 @@ import java.nio.file.Paths
 class ShaderProgram(vertexShaderPath: String, fragmentShaderPath: String) {
     private var programID: Int = 0
     //Matrix buffers for setting matrix uniforms. Prevents allocation for each uniform
+    private val m3x3buf: FloatBuffer = BufferUtils.createFloatBuffer(9)
     private val m4x4buf: FloatBuffer = BufferUtils.createFloatBuffer(16)
+    private var currentTextureUnit = 0
+    private var tuSave: Int
     /**
      * Sets the active shader program of the OpenGL render pipeline to this shader
      * if this isn't already the currently active shader
@@ -23,7 +27,15 @@ class ShaderProgram(vertexShaderPath: String, fragmentShaderPath: String) {
     fun use() {
         val curprog = GL11.glGetInteger(GL20.GL_CURRENT_PROGRAM)
         if (curprog != programID) GL20.glUseProgram(programID)
+        tuSave = 0
+    }
 
+    fun saveTU() {
+        tuSave = currentTextureUnit
+    }
+
+    fun resetTU() {
+        currentTextureUnit = tuSave
     }
 
     /**
@@ -33,8 +45,7 @@ class ShaderProgram(vertexShaderPath: String, fragmentShaderPath: String) {
         GL20.glDeleteProgram(programID)
     }
 
-    //setUniform() functions are added later during the course
-    // float vector uniforms
+    // ------------------------ float vector uniforms -------------------------
     /**
      * Sets a single float uniform
      * @param name  Name of the uniform variable in the shader
@@ -50,22 +61,236 @@ class ShaderProgram(vertexShaderPath: String, fragmentShaderPath: String) {
         }
         return false
     }
-    fun setUniform(name: String, value: Matrix4f, transpose: Boolean = false): Boolean {
+
+    /**
+     *
+     * @param name
+     * @param value
+     * @return
+     */
+    fun setUniform(name: String, value: Vector2f): Boolean {
         if (programID == 0) return false
         val loc = GL20.glGetUniformLocation(programID, name)
         if (loc != -1) {
-            value.get(m4x4buf)
-            GL20.glUniformMatrix4fv(loc,transpose ,m4x4buf)
+            GL20.glUniform2f(loc, value.x, value.y)
             return true
         }
         return false
     }
 
-    fun setUniform(name: String, value: Int): Boolean{
+    /**
+     *
+     * @param name
+     * @param value
+     * @return
+     */
+    fun setUniform(name: String, value: Vector3f): Boolean {
         if (programID == 0) return false
         val loc = GL20.glGetUniformLocation(programID, name)
         if (loc != -1) {
-            GL20.glUniform1i(loc, value);
+            GL20.glUniform3f(loc, value.x, value.y, value.z)
+            return true
+        }
+        return false
+    }
+
+    /**
+     *
+     * @param name
+     * @param value
+     * @return
+     */
+    fun setUniform(name: String, value: Vector4f): Boolean {
+        if (programID == 0) return false
+        val loc = GL20.glGetUniformLocation(programID, name)
+        if (loc != -1) {
+            GL20.glUniform4f(loc, value.x, value.y, value.z, value.w)
+            return true
+        }
+        return false
+    }
+
+    //-------------------------- int vector uniforms --------------------------
+    /**
+     *
+     * @param name
+     * @param value
+     * @return
+     */
+    fun setUniform(name: String, value: Int): Boolean {
+        if (programID == 0) return false
+        val loc = GL20.glGetUniformLocation(programID, name)
+        if (loc != -1) {
+            GL20.glUniform1i(loc, value)
+            return true
+        }
+        return false
+    }
+
+    /**
+     *
+     * @param name
+     * @param value
+     * @return
+     */
+    fun setUniform(name: String, value: Vector2i): Boolean {
+        if (programID == 0) return false
+        val loc = GL20.glGetUniformLocation(programID, name)
+        if (loc != -1) {
+            GL20.glUniform2i(loc, value.x, value.y)
+            return true
+        }
+        return false
+    }
+
+    /**
+     *
+     * @param name
+     * @param value
+     * @return
+     */
+    fun setUniform(name: String, value: Vector3i): Boolean {
+        if (programID == 0) return false
+        val loc = GL20.glGetUniformLocation(programID, name)
+        if (loc != -1) {
+            GL20.glUniform3i(loc, value.x, value.y, value.z)
+            return true
+        }
+        return false
+    }
+
+    /**
+     *
+     * @param name
+     * @param value
+     * @return
+     */
+    fun setUniform(name: String, value: Vector4i): Boolean {
+        if (programID == 0) return false
+        val loc = GL20.glGetUniformLocation(programID, name)
+        if (loc != -1) {
+            GL20.glUniform4i(loc, value.x, value.y, value.z, value.w)
+            return true
+        }
+        return false
+    }
+    
+    // --------------------- unsigned int vector uniforms ---------------------
+    /**
+     *
+     * @param name
+     * @param value
+     * @return
+     */
+    fun setUniformUnsigned(name: String, value: Int): Boolean {
+        if (programID == 0) return false
+        val loc = GL20.glGetUniformLocation(programID, name)
+        if (loc != -1) {
+            GL30.glUniform1ui(loc, value)
+            return true
+        }
+        return false
+    }
+
+    /**
+     *
+     * @param name
+     * @param value
+     * @return
+     */
+    fun setUniformUnsigned(name: String, value: Vector2i): Boolean {
+        if (programID == 0) return false
+        val loc = GL20.glGetUniformLocation(programID, name)
+        if (loc != -1) {
+            GL30.glUniform2ui(loc, value.x, value.y)
+            return true
+        }
+        return false
+    }
+
+    /**
+     *
+     * @param name
+     * @param value
+     * @return
+     */
+    fun setUniformUnsigned(name: String, value: Vector3i): Boolean {
+        if (programID == 0) return false
+        val loc = GL20.glGetUniformLocation(programID, name)
+        if (loc != -1) {
+            GL30.glUniform3ui(loc, value.x, value.y, value.z)
+            return true
+        }
+        return false
+    }
+
+    /**
+     *
+     * @param name
+     * @param value
+     * @return
+     */
+    fun setUniformUnsigned(name: String, value: Vector4i): Boolean {
+        if (programID == 0) return false
+        val loc = GL20.glGetUniformLocation(programID, name)
+        if (loc != -1) {
+            GL30.glUniform4ui(loc, value.x, value.y, value.z, value.w)
+            return true
+        }
+        return false
+    }
+    
+    // ---------------------------- matrix uniforms ---------------------------
+    /**
+     *
+     * @param name
+     * @param value
+     * @param transpose
+     * @return
+     */
+    fun setUniform(name: String, value: Matrix3f, transpose: Boolean): Boolean {
+        if (programID == 0) return false
+        val loc = GL20.glGetUniformLocation(programID, name)
+        if (loc != -1) {
+            value.get(m3x3buf)
+            GL20.glUniformMatrix3fv(loc, transpose, m3x3buf)
+            return true
+        }
+        return false
+    }
+
+    /**
+     *
+     * @param name
+     * @param value
+     * @param transpose
+     * @return
+     */
+    fun setUniform(name: String, value: Matrix4f, transpose: Boolean): Boolean {
+        if (programID == 0) return false
+        val loc = GL20.glGetUniformLocation(programID, name)
+        if (loc != -1) {
+            value.get(m4x4buf)
+            GL20.glUniformMatrix4fv(loc, transpose, m4x4buf)
+            return true
+        }
+        return false
+    }
+
+    // --------------------------- sampler uniforms ---------------------------
+    /**
+     *
+     * @param name
+     * @param tex
+     * @return
+     */
+    fun setUniform(name: String, tex: Texture2D): Boolean {
+        if (programID == 0) return false
+        val tu = currentTextureUnit++
+        tex.bind(tu)
+        val loc = GL20.glGetUniformLocation(programID, name)
+        if (loc != -1) {
+            GL20.glUniform1i(loc, tu)
             return true
         }
         return false
@@ -126,5 +351,6 @@ class ShaderProgram(vertexShaderPath: String, fragmentShaderPath: String) {
         GL20.glDetachShader(programID, fShader)
         GL20.glDeleteShader(vShader)
         GL20.glDeleteShader(fShader)
+        tuSave = 0
     }
 }

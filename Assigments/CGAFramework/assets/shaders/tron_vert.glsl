@@ -1,31 +1,65 @@
 #version 330 core
 
-layout(location = 0) in vec3 position;
-layout(location = 2) in vec3 normals;
+#define MAX_POINT_LIGHTS 10
+#define MAX_SPOT_LIGHTS 10
 
-//uniforms
+layout(location = 0) in vec3 position;
+layout(location = 1) in vec2 textureCoordinate;
+layout(location = 2) in vec3 normal;
+
+// uniforms
 uniform mat4 model_matrix;
 uniform mat4 view_matrix;
-uniform mat4 projection_matrix;
+uniform mat4 proj_matrix;
 
-//Textures
-uniform int m_emit;
-uniform int m_tcMultiplierX;
-uniform int m_tcMultiplierY;
+uniform vec2 tcMultiplier;
 
+// lights
+struct PointLight
+{
+    vec3 Color;
+    vec3 Position;
+};
+struct SpotLight
+{
+    vec3 Color;
+    vec3 Position;
+    vec2 Cone;
+    vec3 Direction;
+};
+uniform PointLight pointLight[MAX_POINT_LIGHTS];
+uniform int numPointLights;
+uniform SpotLight spotLight[MAX_SPOT_LIGHTS];
+uniform int numSpotLights;
+
+// out data
 out struct VertexData
 {
-    vec3 position;
-    vec3 normals;
+    vec2 textureCoordinate;
+    vec3 normal;
+    //light stuff
+    vec3 toCamera;
+    vec3 toPointLight[MAX_POINT_LIGHTS];
+    vec3 toSpotLight[MAX_SPOT_LIGHTS];
 } vertexData;
 
-// translation object to world
 void main(){
-    vec4 pos = view_matrix * model_matrix * vec4(position, 1.0f);
+    mat4 modelview = view_matrix * model_matrix;
+    vec4 viewpos = modelview * vec4(position, 1.0f);  // vertex position in viewspace
 
-    gl_Position = projection_matrix * pos;
-    //gl_Position = vec4(pos.xy, -pos.z, 1.0f);
-    vertexData.position = pos.xyz;
-    //inverse(transpose dazu da damit die Normalen nach dem transform in die Richtige richtungen zeigen
-    vertexData.normals = (inverse(transpose(view_matrix * model_matrix)) * vec4(normals,0.0f)).xyz;
+    // TODO 4.2.3 Vektor von Vertex Position zur Camera Position (im Viewspace)
+    vertexData.toCamera = view_matrix * Vec4(PointLight.position,1.0);
+
+    for (int i = 0; i < numPointLights; i++){
+        // TODO 4.2.3 Vektor von Vertex Position zur Punktlicht Position (im Viewspace)
+        vertexData.toPointLight[i] = view_matrix * Vec4(PointLight.position,1.0);
+    }
+    for (int i = 0; i < numSpotLights; i++) {
+        // TODO 4.3.3 Vektor von Vertex Position zur Scheinwerfer Position (im Viewspace)
+        // vertexData.toSpotLight[i] = ;
+    }
+    gl_Position = proj_matrix * viewpos;
+
+    vertexData.normal = (inverse(transpose(modelview)) * vec4(normal, 0.0f)).xyz;
+    vertexData.textureCoordinate = textureCoordinate * tcMultiplier;
 }

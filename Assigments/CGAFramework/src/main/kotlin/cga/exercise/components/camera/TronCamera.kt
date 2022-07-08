@@ -4,42 +4,38 @@ import cga.exercise.components.geometry.Transformable
 import cga.exercise.components.shader.ShaderProgram
 import org.joml.Matrix4f
 
-/***
- * fieldOfView = vertikaler Oeffnungswinkel der Kamera [90 Grad in Radiant, Angabe in Float]
- * Seitenverhältnis (aspect ratio) --- (indirekt) horizontaler Oeffnungswinkel [16.0f/9.0f]
- * Near Plane --- Entfernung der Near Plane zur Kamera [0.1f, quasi direkt vor der Linse]
- * Far Plane --- Entfernung der Far Plane zur Kamera [100.0f]
-
+/**
+ * Created by Fabian on 16.09.2017.
  */
-class TronCamera(var fov: Float = org.joml.Math.toRadians(90.0f), var aspect: Float = 16.0f/9.0f, var nearPlane: Float = 0.1f, var farPlan: Float= 100.0f) : ICamera, Transformable() {
 
-    /*
-     * Calculate the ViewMatrix according the lecture
-     * values needed:
-     *  - eye –> the position of the camera
-     *  - center –> the point in space to look at
-     *  - up –> the direction of 'up'
-     */
-    override fun getCalculateViewMatrix(): Matrix4f {
-        //View Matrix
-        return Matrix4f().lookAt(getWorldPosition(),getWorldPosition().sub(getWorldZAxis()),getWorldYAxis());
+class TronCamera(var aspectratio: Aspectratio = Aspectratio.WIDESCREEN,
+                 var fov: Float = Math.toRadians(90.0).toFloat(),
+                 var near: Float = 0.1f,
+                 var far: Float = 100.0f) : Transformable() {
+
+
+    //we do a view matrix update only when needed
+    fun calculateViewMatrix(): Matrix4f {
+        return Matrix4f().lookAt(getWorldPosition(), getWorldPosition().sub(getWorldZAxis()), getWorldYAxis())
     }
 
-    /*
-     * Calculate the ProjectionMatrix according the lecture
-     * values needed:
-     *  - fov – the vertical field of view in radians (must be greater than zero and less than PI)
-     *  - aspect – the aspect ratio (i.e. width / height; must be greater than zero)
-     *  - zNear – near clipping plane distance
-     *  - zFar – far clipping plane distance
-     */
-    override fun getCalculateProjectionMatrix(): Matrix4f {
-        //Projection Matrix
-        return Matrix4f().perspective(fov,aspect,nearPlane,farPlan);
+    fun calculateProjectionMatrix(): Matrix4f {
+        return Matrix4f().perspective(fov, aspectratio.ratio, near, far)
     }
 
-    override fun bind(shader: ShaderProgram) {
-        shader.setUniform("projection_matrix",getCalculateProjectionMatrix(),false)
-        shader.setUniform("view_matrix",getCalculateViewMatrix(),false)
+    fun bind(shader: ShaderProgram) {
+        shader.setUniform("view_matrix", calculateViewMatrix(), false);
+        shader.setUniform("proj_matrix", calculateProjectionMatrix(), false);
+    }
+}
+
+class Aspectratio(val ratio : Float) {
+
+    companion object {
+        fun custom(width: Int, height: Int) : Aspectratio {
+            return Aspectratio(width/height.toFloat())
+        }
+        val WIDESCREEN = custom(16,9)
+        val OLDSCOOL = custom(4,3)
     }
 }

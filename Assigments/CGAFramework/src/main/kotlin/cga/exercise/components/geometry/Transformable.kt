@@ -22,7 +22,6 @@ open class Transformable(private var modelMatrix: Matrix4f = Matrix4f(), var par
         return parent?.getWorldModelMatrix()?.mul(getModelMatrix()) ?: getModelMatrix()
     }
 
-
     /**
      * Rotates object around its own origin.
      * @param pitch radiant angle around x-axis ccw
@@ -160,5 +159,4 @@ open class Transformable(private var modelMatrix: Matrix4f = Matrix4f(), var par
                 wmat.m20(), wmat.m21(), wmat.m22()
         ).normalize()
     }
-
 }

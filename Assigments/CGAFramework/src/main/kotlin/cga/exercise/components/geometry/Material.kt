@@ -11,10 +11,10 @@ class Material(var diff: Texture2D,
                var tcMultiplier : Vector2f = Vector2f(1.0f)){
 
     fun bind(shaderProgram: ShaderProgram) {
-        // todo 3.2
-        shaderProgram.setUniform("m_emit",0);
-        shaderProgram.setUniform("m_tcMultiplierX",tcMultiplier.x);
-        shaderProgram.setUniform("m_tcMultiplierY",tcMultiplier.y);
-
+        shaderProgram.setUniform("materialDiff", diff)
+        shaderProgram.setUniform("materialSpec", specular)
+        shaderProgram.setUniform("materialEmit", emit)
+        shaderProgram.setUniform("materialShininess", shininess)
+        shaderProgram.setUniform("tcMultiplier", tcMultiplier)
     }
 }

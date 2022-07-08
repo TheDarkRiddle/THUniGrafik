@@ -13,4 +13,3 @@ data class VertexAttribute(
         var stride: Int,
         var offset: Int
 )
-
