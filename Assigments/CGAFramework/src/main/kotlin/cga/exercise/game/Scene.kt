@@ -90,7 +90,7 @@ class Scene(private val window: GameWindow) {
 
         //bike spot light
         bikeSpotLight = SpotLight("spotLight[${spotLightList.size}]", Vector3f(3.0f, 3.0f, 3.0f), Vector3f(0.0f, 1.0f, -2.0f), Math.toRadians(20.0f), Math.toRadians(30.0f))
-        bikeSpotLight.rotate(Math.toRadians(-10.0f), Math.PI.toFloat(), 0.0f)
+        bikeSpotLight.rotate(Math.toRadians(-10.0f), 0.0f, 0.0f)
         bikeSpotLight.parent = bike
         spotLightList.add(bikeSpotLight)
 
@@ -98,7 +98,7 @@ class Scene(private val window: GameWindow) {
         pointLightList.add(PointLight("pointLight[${pointLightList.size}]", Vector3f(0.0f, 2.0f, 2.0f), Vector3f(-10.0f, 2.0f, -10.0f)))
         pointLightList.add(PointLight("pointLight[${pointLightList.size}]", Vector3f(2.0f, 0.0f, 0.0f), Vector3f(10.0f, 2.0f, 10.0f)))
         spotLightList.add(SpotLight("spotLight[${spotLightList.size}]", Vector3f(10.0f, 20.0f, 20.0f), Vector3f(6.0f, 0.5f, 4.0f), Math.toRadians(20.0f), Math.toRadians(30.0f)))
-        spotLightList.last().rotate(Math.toRadians(20f), Math.toRadians(-120f), 0f)
+        spotLightList.last().rotate(Math.toRadians(20f), Math.toRadians(60.0f), 0f)
 
         //initial opengl state
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f); GLError.checkThrow()

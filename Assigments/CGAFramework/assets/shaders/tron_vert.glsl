@@ -48,15 +48,15 @@ void main(){
     vec4 viewpos = modelview * vec4(position, 1.0f);  // vertex position in viewspace
 
     // TODO 4.2.3 Vektor von Vertex Position zur Camera Position (im Viewspace)
-    vertexData.toCamera = view_matrix * Vec4(PointLight.position,1.0);
+    vertexData.toCamera = -viewpos.xyz;
 
     for (int i = 0; i < numPointLights; i++){
         // TODO 4.2.3 Vektor von Vertex Position zur Punktlicht Position (im Viewspace)
-        vertexData.toPointLight[i] = view_matrix * Vec4(PointLight.position,1.0);
+        vertexData.toPointLight[i] = (view_matrix * vec4(pointLight[i].Position, 1.0f) - viewpos).xyz;
     }
     for (int i = 0; i < numSpotLights; i++) {
         // TODO 4.3.3 Vektor von Vertex Position zur Scheinwerfer Position (im Viewspace)
-        // vertexData.toSpotLight[i] = ;
+         vertexData.toSpotLight[i] = (view_matrix * vec4(spotLight[i].Position, 1.0f) - viewpos).xyz;
     }
     gl_Position = proj_matrix * viewpos;
 
