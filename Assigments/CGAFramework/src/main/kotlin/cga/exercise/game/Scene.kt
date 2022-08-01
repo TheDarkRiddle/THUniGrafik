@@ -21,13 +21,17 @@ import org.lwjgl.opengl.GL11.*
  * Created by Fabian on 16.09.2017.
  */
 class Scene(private val window: GameWindow) {
-    private val staticShader: ShaderProgram = ShaderProgram("assets/shaders/tron_vert.glsl", "assets/shaders/tron_frag.glsl")
+    private val staticShader: ShaderProgram = ShaderProgram("Assigments/CGAFramework/assets/shaders/tron_vert.glsl", "Assigments/CGAFramework/assets/shaders/tron_frag.glsl")
 
     private val ground: Renderable
     private val bike: Renderable
+    private val dragon: Renderable;
 
+    private val dragonMat: Material
     private val groundMaterial: Material
     private val groundColor: Vector3f
+
+
 
     //Lights
     private val bikePointLight: PointLight
@@ -42,19 +46,19 @@ class Scene(private val window: GameWindow) {
     private var oldMouseY = 0.0
     private var firstMouseMove = true
 
-    //scene setup
+    //scene setup^^
     init {
         //load textures
-        val groundDiff = Texture2D("assets/textures/ground_diff.png", true)
+        val groundDiff = Texture2D("Assigments/CGAFramework/assets/textures/ground_diff.png", true)
         groundDiff.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
-        val groundSpecular = Texture2D("assets/textures/ground_spec.png", true)
+        val groundSpecular = Texture2D("Assigments/CGAFramework/assets/textures/ground_spec.png", true)
         groundSpecular.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
-        val groundEmit = Texture2D("assets/textures/ground_emit.png", true)
+        val groundEmit = Texture2D("Assigments/CGAFramework/assets/textures/ground_emit.png", true)
         groundEmit.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
         groundMaterial = Material(groundDiff, groundEmit, groundSpecular, 60f, Vector2f(64.0f, 64.0f))
 
         //load an object and create a mesh
-        val gres = loadOBJ("assets/models/ground.obj")
+        val gres = loadOBJ("Assigments/CGAFramework/assets/models/ground.obj")
         //Create the mesh
         val stride = 8 * 4
         val atr1 = VertexAttribute(3, GL_FLOAT, stride, 0)     //position attribute
@@ -67,9 +71,29 @@ class Scene(private val window: GameWindow) {
             val mesh = Mesh(m.vertexData, m.indexData, vertexAttributes, groundMaterial)
             ground.meshes.add(mesh)
         }
-        bike = loadModel("assets/Light Cycle/Light Cycle/HQ_Movie cycle.obj", Math.toRadians(-90.0f), Math.toRadians(90.0f), 0.0f) ?: throw IllegalArgumentException("Could not load the model")
+        bike = loadModel("Assigments/CGAFramework/assets/Light Cycle/Light Cycle/HQ_Movie cycle.obj", Math.toRadians(-90.0f), Math.toRadians(90.0f), 0.0f) ?: throw IllegalArgumentException("Could not load the model")
         bike.scale(Vector3f(0.8f, 0.8f, 0.8f))
 
+        //loade obj
+
+        val dragonTex = Texture2D("Assigments/CGAFramework/assets/textures/dragon.BMP", true);
+        dragonTex.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+        dragonMat = Material(dragonTex,dragonTex,dragonTex, 60f,Vector2f(64.0f, 64.0f));
+        val dragonOBJ = loadOBJ("Assigments/CGAFramework/assets/models/dragon.obj");
+
+        val d_atr1 = VertexAttribute(3, GL_FLOAT, stride, 0)     //position attribute //38505
+        val d_atr2 = VertexAttribute(2, GL_FLOAT, stride, 3 * 38505) //texture coordinate attribute
+        val d_atr3 = VertexAttribute(3, GL_FLOAT, stride, 5 * 78222) //normal attribute
+        val d_vertexAttributes = arrayOf(atr1, atr2, atr3)
+
+        dragon = Renderable()
+        for (m in dragonOBJ.objects[0].meshes) {
+            val mesh = Mesh(m.vertexData, m.indexData, d_vertexAttributes, dragonMat)
+            dragon.meshes.add(mesh)
+        }
+        //dragon = loadModel("Assigments/CGAFramework/assets/models/dragon.obj",0.0f,180.0f,0.0f) ?: throw IllegalArgumentException("Could not load the model")
+        dragon.scale(Vector3f(0.5f,0.5f,0.5f));
+        dragon.rotate(0.0f, Math.toRadians(90.0f),0.0f);
         //setup camera
         camera = TronCamera(
                 custom(window.framebufferWidth, window.framebufferHeight),
@@ -77,9 +101,9 @@ class Scene(private val window: GameWindow) {
                 0.1f,
                 100.0f
         )
-        camera.parent = bike
-        camera.rotate(Math.toRadians(-35.0f), 0.0f, 0.0f)
-        camera.translate(Vector3f(0.0f, 0.0f, 4.0f))
+        camera.parent = dragon
+        camera.rotate(Math.toRadians(0.0f), Math.toRadians(180.0f), 0.0f)
+        camera.translate(Vector3f(0.0f, 8.0f, 0.0f))
 
         groundColor = Vector3f(0.0f, 1.0f, 0.0f)
 
@@ -134,26 +158,37 @@ class Scene(private val window: GameWindow) {
         ground.render(staticShader)
         staticShader.setUniform("shadingColor", changingColor)
         bike.render(staticShader)
+        //staticShader.setUniform("shadingColor", Vector3f(0.0f,1.0f,0.0f));
+        dragon.render(staticShader);
     }
 
     fun update(dt: Float, t: Float) {
-        val moveMul = 5.0f
+        val moveMul = 9.0f
         val rotateMul = 0.5f * Math.PI.toFloat()
+        val gravity = -0.05f;
         if (window.getKeyState(GLFW_KEY_W)) {
-            bike.translate(Vector3f(0.0f, 0.0f, -dt * moveMul))
+            dragon.translate(Vector3f(0.0f, 0.0f, dt * moveMul))
         }
         if (window.getKeyState(GLFW_KEY_S)) {
-            bike.translate(Vector3f(0.0f, 0.0f, dt * moveMul))
+            dragon.translate(Vector3f(0.0f, 0.0f, -dt * moveMul))
         }
         if (window.getKeyState(GLFW_KEY_A) and window.getKeyState(GLFW_KEY_W)) {
-            bike.rotate(0.0f, dt * rotateMul, 0.0f)
+            dragon.rotate(0.0f,0.0f,-dt * rotateMul)
         }
         if (window.getKeyState(GLFW_KEY_D) and window.getKeyState(GLFW_KEY_W)) {
-            bike.rotate(0.0f, -dt * rotateMul, 0.0f)
+            dragon.rotate(0.0f, 0.0f, dt * rotateMul)
         }
-        if (window.getKeyState(GLFW_KEY_F)) {
-            bikeSpotLight.rotate(Math.PI.toFloat() * dt, 0.0f, 0.0f)
+        if (window.getKeyState(GLFW_KEY_SPACE)) {
+            dragon.translate(Vector3f(0.0f,dt * moveMul+(-gravity),0.0f));
         }
+        if (window.getKeyState(GLFW_KEY_LEFT_SHIFT)) {
+            //bikeSpotLight.rotate(Math.PI.toFloat() * dt, 0.0f, 0.0f)
+            dragon.translate(Vector3f(0.0f,-dt * moveMul,0.0f));
+        }
+        if(dragon.getPosition().y > ground.getPosition().y){
+             dragon.translate(Vector3f(0.0f,gravity,0.0f));
+        }
+
     }
 
     fun onKey(key: Int, scancode: Int, action: Int, mode: Int) {}
@@ -163,7 +198,7 @@ class Scene(private val window: GameWindow) {
             val yawAngle = (xpos - oldMouseX).toFloat() * 0.002f
             val pitchAngle = (ypos - oldMouseY).toFloat() * 0.0005f
             if (!window.getKeyState(GLFW_KEY_LEFT_ALT)) {
-                bike.rotate(0.0f, yawAngle, 0.0f)
+                dragon.rotate(pitchAngle, -yawAngle, 0.0f)
             }
             else{
                 camera.rotateAroundPoint(0.0f, yawAngle, 0.0f, Vector3f(0.0f, 0.0f, 0.0f))

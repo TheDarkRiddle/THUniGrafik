@@ -4,7 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="29943094-a2a4-464f-923e-b5d44aa3314f" name="Changes" comment="" />
+    <list default="true" id="29943094-a2a4-464f-923e-b5d44aa3314f" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assigments/CGAFramework/src/main/kotlin/cga/exercise/components/geometry/Transformable.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Assigments/CGAFramework/src/main/kotlin/cga/exercise/components/geometry/Transformable.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assigments/CGAFramework/src/main/kotlin/cga/exercise/game/Scene.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Assigments/CGAFramework/src/main/kotlin/cga/exercise/game/Scene.kt" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -43,9 +47,15 @@
   &quot;keyToString&quot;: {
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;F:/SSD_Programirung/THUniGrafik/THUniGrafik/Assigments/CGAFramework/assets/textures&quot;
   }
 }</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="F:\SSD_Programirung\THUniGrafik\THUniGrafik\Assigments\CGAFramework\assets\textures" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration name="MainKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="cga.exercise.MainKt" />
