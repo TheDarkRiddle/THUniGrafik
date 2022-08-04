@@ -5,9 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="29943094-a2a4-464f-923e-b5d44aa3314f" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Assigments/CGAFramework/assets/shaders/cubeMap_frag.glsl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assigments/CGAFramework/assets/shaders/cubeMap_vert.glsl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assigments/CGAFramework/assets/textures/dragon.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assigments/CGAFramework/assets/textures/skybox/skybox.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assigments/CGAFramework/src/main/kotlin/cga/exercise/components/geometry/Transformable.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Assigments/CGAFramework/src/main/kotlin/cga/exercise/components/geometry/Transformable.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assigments/CGAFramework/assets/textures/dragon.BMP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assigments/CGAFramework/src/main/kotlin/cga/exercise/components/geometry/Mesh.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Assigments/CGAFramework/src/main/kotlin/cga/exercise/components/geometry/Mesh.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assigments/CGAFramework/src/main/kotlin/cga/exercise/game/Game.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Assigments/CGAFramework/src/main/kotlin/cga/exercise/game/Game.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assigments/CGAFramework/src/main/kotlin/cga/exercise/game/Scene.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Assigments/CGAFramework/src/main/kotlin/cga/exercise/game/Scene.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assigments/CGAFramework/src/main/kotlin/cga/framework/GameWindow.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Assigments/CGAFramework/src/main/kotlin/cga/framework/GameWindow.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,14 +29,52 @@
   <component name="ExternalProjectsManager">
     <system id="GRADLE">
       <state>
+        <task path="$PROJECT_DIR$/Assigments/CGAFramework">
+          <activation />
+        </task>
         <projects_view>
           <tree_state>
-            <expand />
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="CGAFramework" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="CGAFramework" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="CGAFramework" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="help" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="CGAFramework" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="other" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="CGAFramework" type="f1a62948:ProjectNode" />
+                <item name="Dependencies" type="6de06a37:ExternalSystemViewDefaultContributor$MyDependenciesNode" />
+              </path>
+            </expand>
             <select />
           </tree_state>
         </projects_view>
       </state>
     </system>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="GLSL Shader" />
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -53,6 +98,10 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="F:\SSD_Programirung\THUniGrafik\THUniGrafik\Assigments\CGAFramework\assets\textures" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="F:\SSD_Programirung\THUniGrafik\THUniGrafik\Assigments\CGAFramework\assets\textures\skybox" />
       <recent name="F:\SSD_Programirung\THUniGrafik\THUniGrafik\Assigments\CGAFramework\assets\textures" />
     </key>
   </component>
@@ -91,5 +140,8 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/THUniGrafik$MainKt.ic" NAME="MainKt Coverage Results" MODIFIED="1659604692891" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>
 </project>

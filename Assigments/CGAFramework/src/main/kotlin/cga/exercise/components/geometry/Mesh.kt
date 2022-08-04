@@ -2,6 +2,8 @@ package cga.exercise.components.geometry
 
 import cga.exercise.components.shader.ShaderProgram
 import org.lwjgl.opengl.GL11
+import org.lwjgl.opengl.GL11.*
+import org.lwjgl.opengl.GL13.GL_TEXTURE_CUBE_MAP
 import org.lwjgl.opengl.GL15
 import org.lwjgl.opengl.GL20
 import org.lwjgl.opengl.GL30
@@ -16,7 +18,7 @@ import org.lwjgl.opengl.GL30
  *
  * Created by Fabian on 16.09.2017.
  */
-class Mesh(vertexdata: FloatArray, indexdata: IntArray, attributes: Array<VertexAttribute>, private val material: Material) {
+class Mesh(vertexdata: FloatArray, indexdata: IntArray, attributes: Array<VertexAttribute>, private val material: Material) {/*, private val cubeMapTex : Int? = null// ? = null*/
     //private data
     private var vao = 0
     private var vbo = 0
@@ -72,11 +74,18 @@ class Mesh(vertexdata: FloatArray, indexdata: IntArray, attributes: Array<Vertex
         GL30.glBindVertexArray(vao)
         GL11.glDrawElements(GL11.GL_TRIANGLES, indexcount, GL11.GL_UNSIGNED_INT, 0)
         GL30.glBindVertexArray(0)
+        //cleanup();
     }
 
     fun render(shaderProgram: ShaderProgram) {
         shaderProgram.saveTU()
-        material.bind(shaderProgram)
+        //if (material != null){
+            material.bind(shaderProgram)
+        //}
+        /*if (cubeMapTex != null){
+            glDepthMask(false);
+            glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMapTex);
+        }*/
         render()
         shaderProgram.resetTU()
     }
@@ -85,6 +94,7 @@ class Mesh(vertexdata: FloatArray, indexdata: IntArray, attributes: Array<Vertex
      * Deletes the previously allocated OpenGL objects for this mesh
      */
     fun cleanup() {
+        //glDepthMask(true);
         if (ibo != 0) GL15.glDeleteBuffers(ibo)
         if (vbo != 0) GL15.glDeleteBuffers(vbo)
         if (vao != 0) GL30.glDeleteVertexArrays(vao)
