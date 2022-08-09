@@ -18,7 +18,7 @@ import org.lwjgl.opengl.GL30
  *
  * Created by Fabian on 16.09.2017.
  */
-class Mesh(vertexdata: FloatArray, indexdata: IntArray, attributes: Array<VertexAttribute>, private val material: Material) {/*, private val cubeMapTex : Int? = null// ? = null*/
+class Mesh(vertexdata: FloatArray, indexdata: IntArray, attributes: Array<VertexAttribute>, private val material: Material) {/*SKYBOX, private val cubeMapTex : Int? = null// ? = null*/
     //private data
     private var vao = 0
     private var vbo = 0
@@ -79,6 +79,7 @@ class Mesh(vertexdata: FloatArray, indexdata: IntArray, attributes: Array<Vertex
 
     fun render(shaderProgram: ShaderProgram) {
         shaderProgram.saveTU()
+        //SKYBOX
         //if (material != null){
             material.bind(shaderProgram)
         //}

@@ -28,7 +28,7 @@ class Texture2D(imageData: ByteBuffer, width: Int, height: Int, genMipMaps: Bool
         //create texture from file
         //don't support compressed textures for now
         //instead stick to pngs
-        operator fun invoke(path: String, genMipMaps: Boolean): Texture2D {
+        operator fun invoke(path: String,genMipMaps: Boolean): Texture2D {
             val x = BufferUtils.createIntBuffer(1)
             val y = BufferUtils.createIntBuffer(1)
             val readChannels = BufferUtils.createIntBuffer(1)

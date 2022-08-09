@@ -106,6 +106,8 @@ void main(){
     vec3 specColor = invGammaCorrect(texture(materialSpec, vertexData.textureCoordinate).rgb);
     vec3 emitColor = invGammaCorrect(texture(materialEmit, vertexData.textureCoordinate).rgb);
 
+
+
     vec3 emit_term = emitColor * shadingColor;
     vec3 final_color = emit_term;  // this var collects the shading from all light sources
 

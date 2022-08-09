@@ -23,23 +23,29 @@ import org.lwjgl.opengl.GL12.GL_TEXTURE_WRAP_R
 import org.lwjgl.opengl.GL13.GL_TEXTURE_CUBE_MAP
 import org.lwjgl.opengl.GL13.GL_TEXTURE_CUBE_MAP_POSITIVE_X
 import org.lwjgl.stb.STBImage
+import java.util.*
 
 /**
  * Created by Fabian on 16.09.2017.
  */
 class Scene(private val window: GameWindow) {
+    //Shader
     private val staticShader: ShaderProgram = ShaderProgram("Assigments/CGAFramework/assets/shaders/tron_vert.glsl", "Assigments/CGAFramework/assets/shaders/tron_frag.glsl")
+    //SKYBOX
     //private val cubeMapShader : ShaderProgram = ShaderProgram("Assigments/CGAFramework/assets/shaders/cubeMap_vert.glsl", "Assigments/CGAFramework/assets/shaders/cubeMap_frag.glsl");
 
+    //Objects
     private val ground: Renderable
     private val bike: Renderable
-    private val dragon: Renderable;
+    private val dragon: Renderable
+    private val tower: Renderable
 
-    //CubeMap
+    //SKYBOX
     //private val SkyBox: Mesh;
     //val skyBoxTexture: Int;
 
     private val dragonMat: Material
+    private val towerMat: Material
     private val groundMaterial: Material
     private val groundColor: Vector3f
 
@@ -61,11 +67,11 @@ class Scene(private val window: GameWindow) {
     //scene setup^^
     init {
         //load textures
-        val groundDiff = Texture2D("Assigments/CGAFramework/assets/textures/ground_diff.png", true)
+        val groundDiff = Texture2D("Assigments/CGAFramework/assets/textures/NatureGroundTexture.png", true)
         groundDiff.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
-        val groundSpecular = Texture2D("Assigments/CGAFramework/assets/textures/ground_spec.png", true)
+        val groundSpecular = Texture2D("Assigments/CGAFramework/assets/textures/NatureGroundTexture.png", true)
         groundSpecular.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
-        val groundEmit = Texture2D("Assigments/CGAFramework/assets/textures/ground_emit.png", true)
+        val groundEmit = Texture2D("Assigments/CGAFramework/assets/textures/NatureGroundTexture.png", true)
         groundEmit.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
         groundMaterial = Material(groundDiff, groundEmit, groundSpecular, 60f, Vector2f(64.0f, 64.0f))
 
@@ -83,10 +89,11 @@ class Scene(private val window: GameWindow) {
             val mesh = Mesh(m.vertexData, m.indexData, vertexAttributes, groundMaterial)
             ground.meshes.add(mesh)
         }
+        ground.scale(Vector3f(3.0f,1.0f,3.0f));
         bike = loadModel("Assigments/CGAFramework/assets/Light Cycle/Light Cycle/HQ_Movie cycle.obj", Math.toRadians(-90.0f), Math.toRadians(90.0f), 0.0f) ?: throw IllegalArgumentException("Could not load the model")
         bike.scale(Vector3f(0.8f, 0.8f, 0.8f))
 
-        //Skybox
+        //SKYBOX
          var skyboxVerticices = floatArrayOf(
              -1.0f, -1.0f,  1.0f,
               1.0f, -1.0f,  1.0f,
@@ -119,6 +126,7 @@ class Scene(private val window: GameWindow) {
             "Assigments/CGAFramework/assets/textures/skybox/skyBoxBACK.png"
         )
 
+        //SKYBOX
         //skyBoxTexture = genCubeMap(skyBoxTex);
 
         //val skyBoxVAO = VertexAttribute(3, GL_FLOAT, stride, 0)     //position attribute //38505
@@ -126,15 +134,16 @@ class Scene(private val window: GameWindow) {
         //SkyBox = Mesh(skyboxVerticices,skyboxIndicices, skyBoxVertexAttributes, null, skyBoxTexture);
 
 
-        //loade dragon obj
+        //___loade dragon obj___
+        val dragonOBJ = loadOBJ("Assigments/CGAFramework/assets/models/dragonNeu.obj");
+
         val dragonTex = Texture2D("Assigments/CGAFramework/assets/textures/dragon.png", true);
-        dragonTex.setTexParams(GL_CLAMP, GL_CLAMP, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
-        dragonMat = Material(dragonTex,dragonTex,dragonTex, 60f,Vector2f(64.0f, 64.0f));
-        val dragonOBJ = loadOBJ("Assigments/CGAFramework/assets/models/dragon.obj");
+        dragonTex.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+        dragonMat = Material(dragonTex,dragonTex,dragonTex);
 
         val d_atr1 = VertexAttribute(3, GL_FLOAT, stride, 0)     //position attribute //38505
-        val d_atr2 = VertexAttribute(2, GL_FLOAT, stride, 3 * 38505) //texture coordinate attribute
-        val d_atr3 = VertexAttribute(3, GL_FLOAT, stride, 5 * 78222) //normal attribute
+        val d_atr2 = VertexAttribute(2, GL_FLOAT, stride, 3 * 4) //texture coordinate attribute
+        val d_atr3 = VertexAttribute(3, GL_FLOAT, stride, 5 * 4) //normal attribute
         val d_vertexAttributes = arrayOf(d_atr1, d_atr2, d_atr3)
 
         dragon = Renderable()
@@ -145,6 +154,27 @@ class Scene(private val window: GameWindow) {
         dragon.scale(Vector3f(0.5f,0.5f,0.5f));
         dragon.rotate(0.0f, Math.toRadians(90.0f),0.0f);
 
+        //___loade Tower obj___
+        val towerOBJ = loadOBJ("Assigments/CGAFramework/assets/models/towerNeu.obj");
+
+        val towerDiff = Texture2D("Assigments/CGAFramework/assets/textures/TowerTextures/tower_square_7_Base_Color.png",  true);
+            towerDiff.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+        val towerSpec = Texture2D("Assigments/CGAFramework/assets/textures/TowerTextures/tower_square_7_Mixed_AO.png", true);
+            towerSpec.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+        towerMat = Material(towerDiff,towerDiff,towerSpec);
+
+        val t_atr1 = VertexAttribute(3, GL_FLOAT, stride, 0)     //position attribute //38505
+        val t_atr2 = VertexAttribute(2, GL_FLOAT, stride, 3 * 4) //texture coordinate attribute
+        val t_atr3 = VertexAttribute(3, GL_FLOAT, stride, 5 * 4) //normal attribute
+        val t_vertexAttributes = arrayOf(t_atr1, t_atr2, t_atr3)
+
+        tower = Renderable()
+        for (m in towerOBJ.objects[0].meshes) {
+            val mesh = Mesh(m.vertexData, m.indexData, t_vertexAttributes, towerMat)
+            tower.meshes.add(mesh)
+        }
+        tower.translate(Vector3f(0.0f,0.0f,10.0f));
+        tower.scale(Vector3f(3.0f,3.0f,3.0f));
 
         //setup camera
         camera = TronCamera(
@@ -157,7 +187,7 @@ class Scene(private val window: GameWindow) {
         camera.rotate(Math.toRadians(0.0f), Math.toRadians(180.0f), 0.0f)
         camera.translate(Vector3f(0.0f, 8.0f, 0.0f))
 
-        groundColor = Vector3f(0.0f, 1.0f, 0.0f)
+        groundColor = Vector3f(1.0f,1.0f,1.0f)
 
         //bike point light
         bikePointLight = PointLight("pointLight[${pointLightList.size}]", Vector3f(0.0f, 2.0f, 0.0f), Vector3f(0.0f, 0.5f, 0.0f))
@@ -184,7 +214,7 @@ class Scene(private val window: GameWindow) {
         glEnable(GL_DEPTH_TEST); GLError.checkThrow()
         glDepthFunc(GL_LESS); GLError.checkThrow()
     }
-
+    //SKYBOX
     /*fun genCubeMap(paths: Array<String>): Int {
         val CubeMapTextureID = glGenTextures();
         glBindTexture(GL_TEXTURE_CUBE_MAP, CubeMapTextureID);
@@ -213,6 +243,7 @@ class Scene(private val window: GameWindow) {
     fun render(dt: Float, t: Float) {
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
+        //SKYBOX
         //cubeMapShader.use();
         //cubeMapShader.setUniform("skyBox", skyBoxTexture);
         //SkyBox.render(cubeMapShader);
@@ -239,15 +270,17 @@ class Scene(private val window: GameWindow) {
         ground.render(staticShader)
         staticShader.setUniform("shadingColor", changingColor)
         bike.render(staticShader)
-        staticShader.setUniform("shadingColor", Vector3f(0.0f,1.0f,0.0f));
+        staticShader.setUniform("shadingColor", Vector3f(1.0f,1.0f,1.0f));
         dragon.render(staticShader);
+        staticShader.setUniform("shadingColor", Vector3f(1.0f,1.0f,1.0f))
+        tower.render(staticShader)
 
     }
 
     fun update(dt: Float, t: Float) {
-        val moveMul = 9.0f
+        var moveMul = 11.0f
         val rotateMul = 0.5f * Math.PI.toFloat()
-        val gravity = -0.05f;
+        val gravity = -0.06f;
         if (window.getKeyState(GLFW_KEY_W)) {
             dragon.translate(Vector3f(0.0f, 0.0f, dt * moveMul))
         }
@@ -264,15 +297,12 @@ class Scene(private val window: GameWindow) {
             dragon.translate(Vector3f(0.0f,dt * moveMul+(-gravity),0.0f));
         }
         if (window.getKeyState(GLFW_KEY_LEFT_SHIFT)) {
-            //bikeSpotLight.rotate(Math.PI.toFloat() * dt, 0.0f, 0.0f)
             dragon.translate(Vector3f(0.0f,-dt * moveMul,0.0f));
         }
         if(dragon.getPosition().y > ground.getPosition().y){
              dragon.translate(Vector3f(0.0f,gravity,0.0f));
         }
-
     }
-
     fun onKey(key: Int, scancode: Int, action: Int, mode: Int) {}
 
     fun onMouseMove(xpos: Double, ypos: Double) {
@@ -290,8 +320,8 @@ class Scene(private val window: GameWindow) {
         oldMouseY = ypos
     }
     fun onMouseScroll(xoffset: Double, yoffset: Double) {
-        val multyplier = 0.25f;
-       camera.fov = camera.fov + xoffset.toFloat()*multyplier;
+        //val multyplier = 0.25f;
+       //camera.fov = camera.fov * xoffset.toFloat()*multyplier;
     }
     fun cleanup() {}
 }

@@ -8,5 +8,5 @@ out vec4 color;
 uniform saplerCube skybox;
 
 void main() {
-    color = texture(skybox, vertexData.textureCoordinate);
+    color = textureCube(skybox, vertexData.textureCoordinate);
 }
