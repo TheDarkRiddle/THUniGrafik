@@ -18,7 +18,7 @@ import org.lwjgl.opengl.GL30
  *
  * Created by Fabian on 16.09.2017.
  */
-class Mesh(vertexdata: FloatArray, indexdata: IntArray, attributes: Array<VertexAttribute>, private val material: Material) {/*SKYBOX, private val cubeMapTex : Int? = null// ? = null*/
+class Mesh(vertexdata: FloatArray, indexdata: IntArray, attributes: Array<VertexAttribute>, private val material: Material? = null) {
     //private data
     private var vao = 0
     private var vbo = 0
@@ -79,14 +79,9 @@ class Mesh(vertexdata: FloatArray, indexdata: IntArray, attributes: Array<Vertex
 
     fun render(shaderProgram: ShaderProgram) {
         shaderProgram.saveTU()
-        //SKYBOX
-        //if (material != null){
+        if (material != null) {
             material.bind(shaderProgram)
-        //}
-        /*if (cubeMapTex != null){
-            glDepthMask(false);
-            glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMapTex);
-        }*/
+        }
         render()
         shaderProgram.resetTU()
     }
@@ -95,7 +90,6 @@ class Mesh(vertexdata: FloatArray, indexdata: IntArray, attributes: Array<Vertex
      * Deletes the previously allocated OpenGL objects for this mesh
      */
     fun cleanup() {
-        //glDepthMask(true);
         if (ibo != 0) GL15.glDeleteBuffers(ibo)
         if (vbo != 0) GL15.glDeleteBuffers(vbo)
         if (vao != 0) GL30.glDeleteVertexArrays(vao)

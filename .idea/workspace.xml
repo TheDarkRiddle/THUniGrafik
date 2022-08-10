@@ -7,10 +7,8 @@
     <list default="true" id="29943094-a2a4-464f-923e-b5d44aa3314f" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assigments/CGAFramework/assets/shaders/cubeMap_frag.glsl" beforeDir="false" afterPath="$PROJECT_DIR$/Assigments/CGAFramework/assets/shaders/cubeMap_frag.glsl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assigments/CGAFramework/assets/shaders/tron_frag.glsl" beforeDir="false" afterPath="$PROJECT_DIR$/Assigments/CGAFramework/assets/shaders/tron_frag.glsl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assigments/CGAFramework/src/main/kotlin/cga/exercise/components/geometry/Material.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Assigments/CGAFramework/src/main/kotlin/cga/exercise/components/geometry/Material.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assigments/CGAFramework/assets/shaders/cubeMap_vert.glsl" beforeDir="false" afterPath="$PROJECT_DIR$/Assigments/CGAFramework/assets/shaders/cubeMap_vert.glsl" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assigments/CGAFramework/src/main/kotlin/cga/exercise/components/geometry/Mesh.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Assigments/CGAFramework/src/main/kotlin/cga/exercise/components/geometry/Mesh.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assigments/CGAFramework/src/main/kotlin/cga/exercise/components/texture/Texture2D.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Assigments/CGAFramework/src/main/kotlin/cga/exercise/components/texture/Texture2D.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assigments/CGAFramework/src/main/kotlin/cga/exercise/game/Scene.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Assigments/CGAFramework/src/main/kotlin/cga/exercise/game/Scene.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -40,6 +38,12 @@
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="CGAFramework" type="f1a62948:ProjectNode" />
                 <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="CGAFramework" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="build" type="c8890929:TasksNode$1" />
               </path>
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
@@ -102,16 +106,44 @@
       <recent name="F:\SSD_Programirung\THUniGrafik\THUniGrafik\Assigments\CGAFramework\assets\textures" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Gradle.CGAFramework [fatJar]">
+    <configuration name="CGAFramework [fatJar]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/Assigments/CGAFramework" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="fatJar" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
     <configuration name="MainKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="cga.exercise.MainKt" />
       <module name="CGAFramework.main" />
+      <shortenClasspath name="NONE" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Assigments/CGAFramework" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <list>
+      <item itemvalue="Gradle.CGAFramework [fatJar]" />
+      <item itemvalue="Kotlin.MainKt" />
+    </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.CGAFramework [fatJar]" />
         <item itemvalue="Kotlin.MainKt" />
       </list>
     </recent_temporary>

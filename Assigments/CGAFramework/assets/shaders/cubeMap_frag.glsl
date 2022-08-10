@@ -5,8 +5,8 @@ in struct VertexData {
 } vertexData;
 out vec4 color;
 
-uniform saplerCube skybox;
+uniform samplerCube skybox;
 
 void main() {
-    color = textureCube(skybox, vertexData.textureCoordinate);
+    color = texture(skybox, vertexData.textureCoordinate);
 }

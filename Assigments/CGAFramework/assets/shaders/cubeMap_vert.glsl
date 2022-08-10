@@ -10,6 +10,7 @@ out struct VertexData{
 
 void main() {
 
-    vertexData.textureCoordinate = position;
-    gl_Position = proj_matrix * view_matrix * vec4(position, 1.0f);
+    vertexData.textureCoordinate = vec3(position.x, -position.y, position.z);
+    vec4 tempPosition = proj_matrix * view_matrix * vec4(position, 0.0f);
+    gl_Position = tempPosition.xyww;
 }
