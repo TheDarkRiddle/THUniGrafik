@@ -81,7 +81,7 @@ class Scene(private val window: GameWindow) {
         groundMaterial = Material(groundDiff, defaultEmmitTex, defaultSpecTex, 60f, Vector2f(64.0f, 64.0f))
 
         //load an object and create a mesh
-        val gres = loadOBJ("assets/models/ground.obj")
+        val gres = loadOBJ("assets/models/NewGround.obj")
         //Create the mesh
         val stride = 8 * 4
         val atr1 = VertexAttribute(3, GL_FLOAT, stride, 0)     //position attribute
@@ -94,7 +94,8 @@ class Scene(private val window: GameWindow) {
             val mesh = Mesh(m.vertexData, m.indexData, vertexAttributes, groundMaterial)
             ground.meshes.add(mesh)
         }
-        ground.scale(Vector3f(3.0f,1.0f,3.0f))
+        ground.scale(Vector3f(40.0f,40.0f,40.0f))
+        ground.preTranslate(Vector3f(0.0f,10.0f,0.0f))
         bike = loadModel("assets/Light Cycle/Light Cycle/HQ_Movie cycle.obj", Math.toRadians(-90.0f), Math.toRadians(90.0f), 0.0f) ?: throw IllegalArgumentException("Could not load the model")
         bike.scale(Vector3f(0.8f, 0.8f, 0.8f))
 
@@ -150,8 +151,9 @@ class Scene(private val window: GameWindow) {
             val mesh = Mesh(m.vertexData, m.indexData, t_vertexAttributes, towerMat)
             tower.meshes.add(mesh)
         }
-        tower.translate(Vector3f(0.0f,0.0f,10.0f))
         tower.scale(Vector3f(3.0f,3.0f,3.0f))
+        tower.translate(Vector3f(0.0f,-5.0f,10.0f))
+
 
         //setup camera
         camera = TronCamera(
@@ -277,10 +279,10 @@ class Scene(private val window: GameWindow) {
         if (window.getKeyState(GLFW_KEY_S)) {
             dragon.translate(Vector3f(0.0f, 0.0f, -dt * moveMul))
         }
-        if (window.getKeyState(GLFW_KEY_A) and window.getKeyState(GLFW_KEY_W)) {
+        if (window.getKeyState(GLFW_KEY_Q) and window.getKeyState(GLFW_KEY_W)) {
             dragon.rotate(0.0f,0.0f,-dt * rotateMul)
         }
-        if (window.getKeyState(GLFW_KEY_D) and window.getKeyState(GLFW_KEY_W)) {
+        if (window.getKeyState(GLFW_KEY_E) and window.getKeyState(GLFW_KEY_W)) {
             dragon.rotate(0.0f, 0.0f, dt * rotateMul)
         }
         if (window.getKeyState(GLFW_KEY_SPACE)) {
@@ -289,7 +291,7 @@ class Scene(private val window: GameWindow) {
         if (window.getKeyState(GLFW_KEY_LEFT_SHIFT)) {
             dragon.translate(Vector3f(0.0f,-dt * moveMul,0.0f))
         }
-        if(dragon.getPosition().y > ground.getPosition().y){
+        if(!window.getKeyState(GLFW_KEY_W) &&  !window.getKeyState(GLFW_KEY_SPACE)){
              dragon.translate(Vector3f(0.0f,gravity,0.0f))
         }
     }

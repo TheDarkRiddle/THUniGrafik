@@ -6,6 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="29943094-a2a4-464f-923e-b5d44aa3314f" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assigments/CGAFramework/assets/models/dragon/body.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assigments/CGAFramework/assets/models/dragon/body2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assigments/CGAFramework/assets/models/dragon/dragon.obj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assigments/CGAFramework/assets/models/dragon/wings.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Assigments/CGAFramework/src/main/kotlin/cga/exercise/game/Scene.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Assigments/CGAFramework/src/main/kotlin/cga/exercise/game/Scene.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -71,6 +75,7 @@
       <list>
         <option value="GLSL Shader" />
         <option value="Class" />
+        <option value="Kotlin Class" />
       </list>
     </option>
   </component>
@@ -140,8 +145,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Gradle.CGAFramework [fatJar]" />
         <item itemvalue="Kotlin.MainKt" />
+        <item itemvalue="Gradle.CGAFramework [fatJar]" />
       </list>
     </recent_temporary>
   </component>
