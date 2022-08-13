@@ -120,14 +120,16 @@ class Scene(private val window: GameWindow) {
             val mesh = Mesh(m.vertexData, m.indexData, d_vertexAttributes, dragonMat)
             dragon.meshes.add(mesh)
         }
-        dragon.scale(Vector3f(0.5f,0.5f,0.5f))
-        dragon.rotate(0.0f, Math.toRadians(90.0f),0.0f)
 
         //loade dragon Collider
         dragonCollider = genBoxCollider()
-        dragonCollider.parent = dragon
         dragonCollider.translate(dragon.getWorldPosition())
+        dragonCollider.parent = dragon
         dragonCollider.scale(Vector3f(4.0f,4.0f,4.0f))
+
+        dragon.scale(Vector3f(0.5f,0.5f,0.5f))
+        dragon.rotate(0.0f, Math.toRadians(90.0f),0.0f)
+
         //___loade Tower obj___
         val towerOBJ = loadOBJ("assets/models/towerNeu.obj")
 

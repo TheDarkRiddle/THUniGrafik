@@ -6,9 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="29943094-a2a4-464f-923e-b5d44aa3314f" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assigments/CGAFramework/assets/shaders/cubeMap_frag.glsl" beforeDir="false" afterPath="$PROJECT_DIR$/Assigments/CGAFramework/assets/shaders/cubeMap_frag.glsl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assigments/CGAFramework/assets/shaders/cubeMap_vert.glsl" beforeDir="false" afterPath="$PROJECT_DIR$/Assigments/CGAFramework/assets/shaders/cubeMap_vert.glsl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assigments/CGAFramework/src/main/kotlin/cga/exercise/components/geometry/Mesh.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Assigments/CGAFramework/src/main/kotlin/cga/exercise/components/geometry/Mesh.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assigments/CGAFramework/src/main/kotlin/cga/exercise/game/Scene.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Assigments/CGAFramework/src/main/kotlin/cga/exercise/game/Scene.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -106,7 +103,7 @@
       <recent name="F:\SSD_Programirung\THUniGrafik\THUniGrafik\Assigments\CGAFramework\assets\textures" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.CGAFramework [fatJar]">
+  <component name="RunManager" selected="Kotlin.MainKt">
     <configuration name="CGAFramework [fatJar]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
