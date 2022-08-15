@@ -32,6 +32,8 @@ class Scene(private val window: GameWindow) {
     //SKYBOX
     private val cubeMapShader : ShaderProgram = ShaderProgram("assets/shaders/cubeMap_vert.glsl", "assets/shaders/cubeMap_frag.glsl")
 
+    //blending
+    //private val blendingShader : ShaderProgram = ShaderProgram("assets/shaders/blending_vert.glsl", "assets/shaders/blending_frag.glsl")
     //Objects
     private val ground: Renderable
     private val bike: Renderable
@@ -50,7 +52,8 @@ class Scene(private val window: GameWindow) {
     private val towerMat: Material
     private val groundMaterial: Material
     private val groundColor: Vector3f
-
+    private val groundDiff2: Texture2D
+    private  val blendMap: Texture2D
 
 
     //Lights
@@ -74,8 +77,14 @@ class Scene(private val window: GameWindow) {
         val defaultSpecTex = Texture2D("assets/textures/defaultSpecTex.png",true)
             defaultSpecTex.setTexParams(GL_CLAMP, GL_CLAMP, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
 
-        val groundDiff = Texture2D("assets/textures/NatureGroundTexture.png", true)
+        val groundDiff = Texture2D("assets/textures/ground/NatureGroundTexture.png", true)
         groundDiff.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
+
+        groundDiff2 = Texture2D("assets/textures/ground/groundMountainTexture.png", true)
+        groundDiff.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
+
+        blendMap = Texture2D("assets/textures/ground/blendMap.png", false)
+        groundDiff.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR, GL_LINEAR)
 
         //__loade Ground__
         groundMaterial = Material(groundDiff, defaultEmmitTex, defaultSpecTex, 60f, Vector2f(64.0f, 64.0f))
@@ -180,6 +189,7 @@ class Scene(private val window: GameWindow) {
         spotLightList.add(bikeSpotLight)
 
         // additional lights in the scene
+        pointLightList.add(PointLight("pointLight[${pointLightList.size}]",Vector3f(100.0f,100.0f,100.0f), Vector3f(0.0f,50.0f,0.0f)))
         pointLightList.add(PointLight("pointLight[${pointLightList.size}]", Vector3f(0.0f, 2.0f, 2.0f), Vector3f(-10.0f, 2.0f, -10.0f)))
         pointLightList.add(PointLight("pointLight[${pointLightList.size}]", Vector3f(2.0f, 0.0f, 0.0f), Vector3f(10.0f, 2.0f, 10.0f)))
         spotLightList.add(SpotLight("spotLight[${spotLightList.size}]", Vector3f(10.0f, 20.0f, 20.0f), Vector3f(6.0f, 0.5f, 4.0f), Math.toRadians(20.0f), Math.toRadians(30.0f)))
@@ -229,6 +239,8 @@ class Scene(private val window: GameWindow) {
 
         // render objects
             //ground
+        //staticShader.setUniform("secondTexture", groundDiff2)
+        //staticShader.setUniform("blendMap", blendMap)
         staticShader.setUniform("shadingColor", groundColor)
         ground.render(staticShader)
             //bike
@@ -279,10 +291,10 @@ class Scene(private val window: GameWindow) {
         if (window.getKeyState(GLFW_KEY_S)) {
             dragon.translate(Vector3f(0.0f, 0.0f, -dt * moveMul))
         }
-        if (window.getKeyState(GLFW_KEY_Q) and window.getKeyState(GLFW_KEY_W)) {
+        if (window.getKeyState(GLFW_KEY_Q)) {
             dragon.rotate(0.0f,0.0f,-dt * rotateMul)
         }
-        if (window.getKeyState(GLFW_KEY_E) and window.getKeyState(GLFW_KEY_W)) {
+        if (window.getKeyState(GLFW_KEY_E)) {
             dragon.rotate(0.0f, 0.0f, dt * rotateMul)
         }
         if (window.getKeyState(GLFW_KEY_SPACE)) {
@@ -292,7 +304,9 @@ class Scene(private val window: GameWindow) {
             dragon.translate(Vector3f(0.0f,-dt * moveMul,0.0f))
         }
         if(!window.getKeyState(GLFW_KEY_W) &&  !window.getKeyState(GLFW_KEY_SPACE)){
-             dragon.translate(Vector3f(0.0f,gravity,0.0f))
+            if(dragon.getPosition().y >= ground.getPosition().y){
+                dragon.translate(Vector3f(0.0f,gravity,0.0f))
+            }
         }
     }
     fun onKey(key: Int, scancode: Int, action: Int, mode: Int) {}

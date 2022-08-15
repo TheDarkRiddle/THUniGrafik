@@ -3,6 +3,7 @@ package cga.exercise.components.geometry
 import cga.exercise.components.shader.ShaderProgram
 import cga.exercise.components.texture.Texture2D
 import org.joml.Vector2f
+import org.w3c.dom.Text
 
 class Material(var diff: Texture2D,
                var emit: Texture2D,
@@ -16,5 +17,6 @@ class Material(var diff: Texture2D,
         shaderProgram.setUniform("materialSpec", specular)
         shaderProgram.setUniform("materialShininess", shininess)
         shaderProgram.setUniform("tcMultiplier", tcMultiplier)
+        
     }
 }
