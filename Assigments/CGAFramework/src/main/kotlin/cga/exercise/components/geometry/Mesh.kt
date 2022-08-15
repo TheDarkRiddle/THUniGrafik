@@ -2,8 +2,6 @@ package cga.exercise.components.geometry
 
 import cga.exercise.components.shader.ShaderProgram
 import org.lwjgl.opengl.GL11
-import org.lwjgl.opengl.GL11.*
-import org.lwjgl.opengl.GL13.GL_TEXTURE_CUBE_MAP
 import org.lwjgl.opengl.GL15
 import org.lwjgl.opengl.GL20
 import org.lwjgl.opengl.GL30
@@ -74,14 +72,11 @@ class Mesh(vertexdata: FloatArray, indexdata: IntArray, attributes: Array<Vertex
         GL30.glBindVertexArray(vao)
         GL11.glDrawElements(GL11.GL_TRIANGLES, indexcount, GL11.GL_UNSIGNED_INT, 0)
         GL30.glBindVertexArray(0)
-        //cleanup();
     }
 
     fun render(shaderProgram: ShaderProgram) {
         shaderProgram.saveTU()
-        if (material != null) {
-            material.bind(shaderProgram)
-        }
+            material?.bind(shaderProgram)
         render()
         shaderProgram.resetTU()
     }
