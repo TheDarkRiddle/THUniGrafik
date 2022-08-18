@@ -33,7 +33,7 @@ class Scene(private val window: GameWindow) {
     private val cubeMapShader : ShaderProgram = ShaderProgram("assets/shaders/cubeMap_vert.glsl", "assets/shaders/cubeMap_frag.glsl")
 
     //blending
-    //private val blendingShader : ShaderProgram = ShaderProgram("assets/shaders/blending_vert.glsl", "assets/shaders/blending_frag.glsl")
+    private val blendingShader : ShaderProgram = ShaderProgram("assets/shaders/blending_vert.glsl", "assets/shaders/blending_frag.glsl")
     //Objects
     private val ground: Renderable
     private val bike: Renderable
@@ -73,18 +73,18 @@ class Scene(private val window: GameWindow) {
     init {
         //load textures
         val defaultEmmitTex = Texture2D("assets/textures/defaultEmmitTex.png",true)
-            defaultEmmitTex.setTexParams(GL_CLAMP, GL_CLAMP, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
+            defaultEmmitTex.setTexParams(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
         val defaultSpecTex = Texture2D("assets/textures/defaultSpecTex.png",true)
-            defaultSpecTex.setTexParams(GL_CLAMP, GL_CLAMP, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
+            defaultSpecTex.setTexParams(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
 
-        val groundDiff = Texture2D("assets/textures/ground/NatureGroundTexture.png", true)
+        val groundDiff = Texture2D("assets/textures/ground/NatureGroundTexture.png", true) //rot.png
         groundDiff.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
 
-        groundDiff2 = Texture2D("assets/textures/ground/groundMountainTexture.png", true)
-        groundDiff.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
+        groundDiff2 = Texture2D("assets/textures/ground/groundMountainTexture.png", true) //grün.png
+        groundDiff2.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
 
         blendMap = Texture2D("assets/textures/ground/blendMap.png", false)
-        groundDiff.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR, GL_LINEAR)
+        blendMap.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR, GL_LINEAR)
 
         //__loade Ground__
         groundMaterial = Material(groundDiff, defaultEmmitTex, defaultSpecTex, 60f, Vector2f(64.0f, 64.0f))
@@ -133,7 +133,7 @@ class Scene(private val window: GameWindow) {
 
         //loade dragon Collider
         dragonCollider = genBoxCollider()
-        dragonCollider.translate(dragon.getWorldPosition())
+        dragonCollider.translate(dragon.getPosition())
         dragonCollider.parent = dragon
         dragonCollider.scale(Vector3f(4.0f,4.0f,4.0f))
 
@@ -211,17 +211,39 @@ class Scene(private val window: GameWindow) {
         if(skyBox != null && skyBoxTexture != null){
         cubeMapShader.use()
         camera.bind(cubeMapShader)
-        glDepthFunc(GL_LEQUAL); GLError.checkThrow()
+        glDepthFunc(GL_LEQUAL); //GLError.checkThrow()
         glDepthMask(false)
         glBindTexture(GL_TEXTURE_CUBE_MAP, skyBoxTexture!!)
         cubeMapShader.setUniform("skyBox", skyBoxTexture!!)
         skyBox!!.render(cubeMapShader)
         glDepthMask(true)
 
-        glDepthFunc(GL_LESS); GLError.checkThrow()
+        glDepthFunc(GL_LESS); //GLError.checkThrow()
         staticShader.use()
         camera.bind(staticShader)
         }
+
+        blendingShader.use()
+
+        //camera
+        camera.bind(blendingShader)
+        // bind lights
+        for (pointLight in pointLightList) {
+            pointLight.bind(blendingShader)
+        }
+        blendingShader.setUniform("numPointLights", pointLightList.size)
+        for (spotLight in spotLightList) {
+            spotLight.bind(blendingShader, camera.calculateViewMatrix())
+        }
+        blendingShader.setUniform("numSpotLights", spotLightList.size)
+
+        groundDiff2.bind(3)
+        blendingShader.setUniform("secondTexture", 3)
+        blendMap.bind(4)
+        blendingShader.setUniform("blendMap", 4)
+        ground.render(blendingShader)
+
+        staticShader.use();
 
         // TODO 4.5 Verstehen: Wie führen die hier verwendeten Funktionen zu dem Regenbogen-Effekt über die Zeit?
         val changingColor = Vector3f(Math.abs(Math.sin(t)), 0f, Math.abs(Math.cos(t)))
@@ -241,8 +263,8 @@ class Scene(private val window: GameWindow) {
             //ground
         //staticShader.setUniform("secondTexture", groundDiff2)
         //staticShader.setUniform("blendMap", blendMap)
-        staticShader.setUniform("shadingColor", groundColor)
-        ground.render(staticShader)
+        //staticShader.setUniform("shadingColor", groundColor)
+        //ground.render(staticShader)
             //bike
         staticShader.setUniform("shadingColor", changingColor)
         bike.render(staticShader)
