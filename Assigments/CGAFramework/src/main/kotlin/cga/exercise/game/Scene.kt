@@ -41,7 +41,9 @@ class Scene(private val window: GameWindow) {
     private val tower: Renderable
 
     //Collider
-    private val dragonCollider: Renderable
+    private val colliderArrray: Array<CollisionCircle>
+    private val dragonCollider: CollisionCircle
+    private val bikeCollider: CollisionCircle
 
     //SKYBOX
     private var skyBox: Mesh? = null
@@ -131,11 +133,6 @@ class Scene(private val window: GameWindow) {
             dragon.meshes.add(mesh)
         }
 
-        //loade dragon Collider
-        dragonCollider = genBoxCollider()
-        dragonCollider.translate(dragon.getPosition())
-        dragonCollider.parent = dragon
-        dragonCollider.scale(Vector3f(4.0f,4.0f,4.0f))
 
         dragon.scale(Vector3f(0.5f,0.5f,0.5f))
         dragon.rotate(0.0f, Math.toRadians(90.0f),0.0f)
@@ -162,6 +159,13 @@ class Scene(private val window: GameWindow) {
         }
         tower.scale(Vector3f(3.0f,3.0f,3.0f))
         tower.translate(Vector3f(0.0f,-5.0f,10.0f))
+
+        //loade Collider
+        dragonCollider = CollisionCircle(dragon)
+        System.out.println("Dragon Radius = " + dragonCollider.getRadius())
+        bikeCollider = CollisionCircle(bike)
+        System.out.println("Dragon Bike = " + bikeCollider.getRadius())
+        colliderArrray = arrayOf(dragonCollider, bikeCollider);
 
 
         //setup camera
@@ -260,19 +264,12 @@ class Scene(private val window: GameWindow) {
         staticShader.setUniform("numSpotLights", spotLightList.size)
 
         // render objects
-            //ground
-        //staticShader.setUniform("secondTexture", groundDiff2)
-        //staticShader.setUniform("blendMap", blendMap)
-        //staticShader.setUniform("shadingColor", groundColor)
-        //ground.render(staticShader)
             //bike
         staticShader.setUniform("shadingColor", changingColor)
         bike.render(staticShader)
             //dragon
         staticShader.setUniform("shadingColor", Vector3f(1.0f,1.0f,1.0f))
         dragon.render(staticShader)
-        staticShader.setUniform("shadingColor", Vector3f(1.0f,0.0f,0.0f))
-        dragonCollider.render(staticShader)
             //tower
         staticShader.setUniform("shadingColor", Vector3f(1.0f,1.0f,1.0f))
         tower.render(staticShader)
@@ -330,6 +327,7 @@ class Scene(private val window: GameWindow) {
                 dragon.translate(Vector3f(0.0f,gravity,0.0f))
             }
         }
+        System.out.println(checkCollision(colliderArrray))
     }
     fun onKey(key: Int, scancode: Int, action: Int, mode: Int) {}
 
@@ -395,42 +393,43 @@ class Scene(private val window: GameWindow) {
         skyBox = Mesh(skyBoxVertices,skyBoxIndices, skyBoxVertexAttributes)
 
     }
+    fun checkCollision(colliderArray : Array<CollisionCircle>): Boolean{
+        var bDoseCollide = false
+        /*
+        for(elemOne in colliderArray){
+            val firstParentPos = elemOne.getOwnerPosition()
 
-    fun genBoxCollider(): Renderable{
-        val BoxVertices = floatArrayOf(
-            -1.0f, -1.0f,  1.0f,
-            1.0f, -1.0f,  1.0f,
-            1.0f, -1.0f, -1.0f,
-            -1.0f, -1.0f, -1.0f,
-            -1.0f,  1.0f,  1.0f,
-            1.0f,  1.0f,  1.0f,
-            1.0f,  1.0f, -1.0f,
-            -1.0f,  1.0f, -1.0f
-        )
-        val BoxIndices = intArrayOf(
-            1, 2, 6,
-            6, 5, 1,
-            0, 4, 7,
-            7, 3, 0,
-            4, 5, 6,
-            6, 7, 4,
-            0, 1, 5,
-            5, 4, 0,
-            3, 7, 6,
-            6, 2, 3,
-            3 ,2, 1,
-            3, 0, 1
-        )
+            for ((index, elemTwo) in colliderArray.withIndex()){
+                if (index+1 > colliderArray.size){
+                    break
+                }
+                val secondParentPos = colliderArray[index+1].getOwnerPosition()
+                val distance = firstParentPos.distance(secondParentPos)
 
-        val BoxVAO = VertexAttribute(3, GL_FLOAT, 3 * 4, 0)
-        val BoxVertexAtributes = arrayOf(BoxVAO)
+                val totalRadius = elemOne.getRadius() + colliderArray[index+1].getRadius()
 
-        val sampleMat = Material(Texture2D("assets/textures/default.png",true), Texture2D("assets/textures/defaultEmmitTex.png",true), Texture2D("assets/textures/defaultSpecTEx.png",true))
-        return  Renderable(
-                    mutableListOf(
-                        Mesh(BoxVertices, BoxIndices, BoxVertexAtributes, sampleMat)
-                                )
-                        )
+                if (distance < totalRadius){
+                    bDoseCollide = !(elemOne.getBIsAllowedToCollide() && colliderArray[index+1].getBIsAllowedToCollide())
+                }
+
+            }
+        }*/
+        val first = colliderArray[0]
+        val second = colliderArray[1]
+
+        //System.out.println("Position One" + first.getPosition())
+        //System.out.println("Position Two" + second.getPosition())
+        val distance = first.getOwnerPosition().distance(second.getOwnerPosition())
+        //System.out.println("Distance:" + distance)
+        val totalRadius = first.getRadius() + second.getRadius()
+        //System.out.println("totalRadius" + totalRadius)
+
+        if (distance < totalRadius){
+            bDoseCollide = !(first.getBIsAllowedToCollide() && second.getBIsAllowedToCollide())
+        }
+
+
+        return bDoseCollide
     }
     fun cleanup() {}
 }

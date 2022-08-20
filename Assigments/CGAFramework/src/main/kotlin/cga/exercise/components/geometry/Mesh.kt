@@ -16,7 +16,7 @@ import org.lwjgl.opengl.GL30
  *
  * Created by Fabian on 16.09.2017.
  */
-class Mesh(vertexdata: FloatArray, indexdata: IntArray, attributes: Array<VertexAttribute>, private val material: Material? = null) {
+class Mesh(private val vertexdata: FloatArray, indexdata: IntArray, attributes: Array<VertexAttribute>, private val material: Material? = null) {
     //private data
     private var vao = 0
     private var vbo = 0
@@ -81,6 +81,9 @@ class Mesh(vertexdata: FloatArray, indexdata: IntArray, attributes: Array<Vertex
         shaderProgram.resetTU()
     }
 
+    fun getVertexData():FloatArray{
+        return vertexdata
+    }
     /**
      * Deletes the previously allocated OpenGL objects for this mesh
      */

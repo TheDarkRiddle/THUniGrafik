@@ -5,11 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="29943094-a2a4-464f-923e-b5d44aa3314f" name="Changes" comment="Fix Für Lapptop">
+      <change afterPath="$PROJECT_DIR$/Assigments/CGAFramework/src/main/kotlin/cga/exercise/components/geometry/CollisionCircle.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assigments/CGAFramework/assets/shaders/blending_frag.glsl" beforeDir="false" afterPath="$PROJECT_DIR$/Assigments/CGAFramework/assets/shaders/blending_frag.glsl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assigments/CGAFramework/assets/shaders/blending_vert.glsl" beforeDir="false" afterPath="$PROJECT_DIR$/Assigments/CGAFramework/assets/shaders/blending_vert.glsl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assigments/CGAFramework/assets/textures/ground/blendMap.png" beforeDir="false" afterPath="$PROJECT_DIR$/Assigments/CGAFramework/assets/textures/ground/blendMap.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assigments/CGAFramework/src/main/kotlin/cga/exercise/components/geometry/Material.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Assigments/CGAFramework/src/main/kotlin/cga/exercise/components/geometry/Material.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assigments/CGAFramework/src/main/kotlin/cga/exercise/components/geometry/Mesh.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Assigments/CGAFramework/src/main/kotlin/cga/exercise/components/geometry/Mesh.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assigments/CGAFramework/src/main/kotlin/cga/exercise/game/Scene.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Assigments/CGAFramework/src/main/kotlin/cga/exercise/game/Scene.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -74,8 +72,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Class" />
-        <option value="Kotlin Class" />
         <option value="GLSL Shader" />
+        <option value="Kotlin Class" />
       </list>
     </option>
   </component>
