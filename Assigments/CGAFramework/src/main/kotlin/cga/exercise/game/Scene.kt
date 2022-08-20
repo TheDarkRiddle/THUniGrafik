@@ -45,6 +45,9 @@ class Scene(private val window: GameWindow) {
     private val dragonCollider: CollisionCircle
     private val bikeCollider: CollisionCircle
 
+    private val helperSphere: Renderable
+    private val helperSphereTwo: Renderable
+
     //SKYBOX
     private var skyBox: Mesh? = null
     private var skyBoxTexture: Int? = null
@@ -66,7 +69,10 @@ class Scene(private val window: GameWindow) {
     private val spotLightList = mutableListOf<SpotLight>()
 
     //camera
+    private var camCount = 0
+    private var localCam: TronCamera? =null
     private val camera: TronCamera
+    private val camTwo: TronCamera
     private var oldMouseX = 0.0
     private var oldMouseY = 0.0
     private var firstMouseMove = true
@@ -106,7 +112,6 @@ class Scene(private val window: GameWindow) {
             ground.meshes.add(mesh)
         }
         ground.scale(Vector3f(40.0f,40.0f,40.0f))
-        ground.preTranslate(Vector3f(0.0f,10.0f,0.0f))
         bike = loadModel("assets/Light Cycle/Light Cycle/HQ_Movie cycle.obj", Math.toRadians(-90.0f), Math.toRadians(90.0f), 0.0f) ?: throw IllegalArgumentException("Could not load the model")
         bike.scale(Vector3f(0.8f, 0.8f, 0.8f))
 
@@ -115,7 +120,7 @@ class Scene(private val window: GameWindow) {
 
 
         //___loade dragon obj___
-        val dragonOBJ = loadOBJ("assets/models/dragonNeu.obj")
+        val dragonOBJ = loadOBJ("assets/models/dragonCentered.obj")
 
         val dragonTex = Texture2D("assets/textures/dragon.png", true)
         dragonTex.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
@@ -158,15 +163,23 @@ class Scene(private val window: GameWindow) {
             tower.meshes.add(mesh)
         }
         tower.scale(Vector3f(3.0f,3.0f,3.0f))
-        tower.translate(Vector3f(0.0f,-5.0f,10.0f))
+        tower.translate(Vector3f(0.0f,0.0f,10.0f))
 
         //loade Collider
-        dragonCollider = CollisionCircle(dragon)
-        System.out.println("Dragon Radius = " + dragonCollider.getRadius())
-        bikeCollider = CollisionCircle(bike)
-        System.out.println("Dragon Bike = " + bikeCollider.getRadius())
-        colliderArrray = arrayOf(dragonCollider, bikeCollider);
+        dragonCollider = CollisionCircle(dragon,0.5f)
+        bikeCollider = CollisionCircle(bike, 0.8f)
+        colliderArrray = arrayOf(dragonCollider, bikeCollider)
 
+        //Collider Sphere
+        helperSphere = getSphere()
+        helperSphere.parent = dragon
+        helperSphere.translate(dragon.getPosition())
+        helperSphere.scale(Vector3f(11.168262f))
+
+        helperSphereTwo = getSphere()
+        helperSphereTwo.parent = bike
+        helperSphereTwo.translate(bike.getPosition())
+        helperSphereTwo.scale(Vector3f(1.69667f))
 
         //setup camera
         camera = TronCamera(
@@ -175,6 +188,14 @@ class Scene(private val window: GameWindow) {
                 0.1f,
                 100.0f
         )
+        camTwo = TronCamera(
+                custom(window.framebufferWidth, window.framebufferHeight),
+                Math.toRadians(90.0f),
+                0.1f,
+                100.0f
+        )
+        camTwo.parent = bike
+        camTwo.rotate(Math.toRadians(0.0f), Math.toRadians(180.0f), 0.0f)
         camera.parent = dragon
         camera.rotate(Math.toRadians(0.0f), Math.toRadians(180.0f), 0.0f)
         camera.translate(Vector3f(0.0f, 8.0f, 0.0f))
@@ -211,10 +232,15 @@ class Scene(private val window: GameWindow) {
     fun render(dt: Float, t: Float) {
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
+        localCam = if(camCount == 0){
+            camera
+        }else{
+            camTwo
+        }
         //SKYBOX
         if(skyBox != null && skyBoxTexture != null){
         cubeMapShader.use()
-        camera.bind(cubeMapShader)
+        localCam!!.bind(cubeMapShader)
         glDepthFunc(GL_LEQUAL); //GLError.checkThrow()
         glDepthMask(false)
         glBindTexture(GL_TEXTURE_CUBE_MAP, skyBoxTexture!!)
@@ -224,20 +250,20 @@ class Scene(private val window: GameWindow) {
 
         glDepthFunc(GL_LESS); //GLError.checkThrow()
         staticShader.use()
-        camera.bind(staticShader)
+        localCam!!.bind(staticShader)
         }
 
         blendingShader.use()
 
-        //camera
-        camera.bind(blendingShader)
+        //localCam
+        localCam!!.bind(blendingShader)
         // bind lights
         for (pointLight in pointLightList) {
             pointLight.bind(blendingShader)
         }
         blendingShader.setUniform("numPointLights", pointLightList.size)
         for (spotLight in spotLightList) {
-            spotLight.bind(blendingShader, camera.calculateViewMatrix())
+            spotLight.bind(blendingShader, localCam!!.calculateViewMatrix())
         }
         blendingShader.setUniform("numSpotLights", spotLightList.size)
 
@@ -259,7 +285,7 @@ class Scene(private val window: GameWindow) {
         }
         staticShader.setUniform("numPointLights", pointLightList.size)
         for (spotLight in spotLightList) {
-            spotLight.bind(staticShader, camera.calculateViewMatrix())
+            spotLight.bind(staticShader, localCam!!.calculateViewMatrix())
         }
         staticShader.setUniform("numSpotLights", spotLightList.size)
 
@@ -270,6 +296,8 @@ class Scene(private val window: GameWindow) {
             //dragon
         staticShader.setUniform("shadingColor", Vector3f(1.0f,1.0f,1.0f))
         dragon.render(staticShader)
+        helperSphere.render(staticShader)
+        helperSphereTwo.render(staticShader)
             //tower
         staticShader.setUniform("shadingColor", Vector3f(1.0f,1.0f,1.0f))
         tower.render(staticShader)
@@ -327,7 +355,14 @@ class Scene(private val window: GameWindow) {
                 dragon.translate(Vector3f(0.0f,gravity,0.0f))
             }
         }
-        System.out.println(checkCollision(colliderArrray))
+        if(window.getKeyState(GLFW_KEY_1)){
+            camCount = 0
+        }
+        if(window.getKeyState(GLFW_KEY_2)){
+            camCount = 1
+        }
+
+        System.out.println("Dose collide:" + checkCollision(colliderArrray))
     }
     fun onKey(key: Int, scancode: Int, action: Int, mode: Int) {}
 
@@ -339,7 +374,7 @@ class Scene(private val window: GameWindow) {
                 dragon.rotate(pitchAngle, -yawAngle, 0.0f)
             }
             else{
-                camera.rotateAroundPoint(0.0f, yawAngle, 0.0f, Vector3f(0.0f, 0.0f, 0.0f))
+                localCam!!.rotateAroundPoint(0.0f, yawAngle, 0.0f, Vector3f(0.0f, 0.0f, 0.0f))
             }
         } else firstMouseMove = false
         oldMouseX = xpos
@@ -348,6 +383,22 @@ class Scene(private val window: GameWindow) {
     fun onMouseScroll(xoffset: Double, yoffset: Double) {
         //val multyplier = 0.25f
        //camera.fov = camera.fov * xoffset.toFloat()*multyplier
+    }
+    fun getSphere():Renderable{
+
+        val SphereOBJ = loadOBJ("assets/models/newSphere.obj")
+        val d_atr1 = VertexAttribute(3, GL_FLOAT, 3 * 4, 0)     //position attribute //38505
+        val d_atr2 = VertexAttribute(2, GL_FLOAT, 3 * 4, 3 * 4) //texture coordinate attribute
+        val d_atr3 = VertexAttribute(3, GL_FLOAT, 3 * 4, 5 * 4) //normal attribute
+        val d_vertexAttributes = arrayOf(d_atr1, d_atr2, d_atr3)
+
+        val Sphere = Renderable()
+        for (m in SphereOBJ.objects[0].meshes) {
+            val mesh = Mesh(m.vertexData, m.indexData, d_vertexAttributes)
+            Sphere.meshes.add(mesh)
+        }
+
+        return Sphere
     }
     fun loadeSkyBox(){
         //SKYBOX
@@ -417,12 +468,19 @@ class Scene(private val window: GameWindow) {
         val first = colliderArray[0]
         val second = colliderArray[1]
 
-        //System.out.println("Position One" + first.getPosition())
-        //System.out.println("Position Two" + second.getPosition())
+        System.out.println("____________DATA BLOCK START____________")
+        System.out.println("Position Dragon" + first.getOwnerPosition())
+        System.out.println("WeitesterPunkt:" + first.getWeitesterPunkt())
+        System.out.println("Radius:" + first.getRadius())
+
+        System.out.println("Position Bike" + second.getOwnerPosition())
+        System.out.println("WeitesterPunkt:" + second.getWeitesterPunkt())
+        System.out.println("Radius:" + second.getRadius())
+        System.out.println("_______ERGEBNISSE_______")
         val distance = first.getOwnerPosition().distance(second.getOwnerPosition())
-        //System.out.println("Distance:" + distance)
+        System.out.println("Distance:" + distance)
         val totalRadius = first.getRadius() + second.getRadius()
-        //System.out.println("totalRadius" + totalRadius)
+        System.out.println("totalRadius" + totalRadius)
 
         if (distance < totalRadius){
             bDoseCollide = !(first.getBIsAllowedToCollide() && second.getBIsAllowedToCollide())

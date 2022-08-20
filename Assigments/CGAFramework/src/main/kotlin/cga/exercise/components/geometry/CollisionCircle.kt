@@ -1,11 +1,14 @@
 package cga.exercise.components.geometry
 
 import org.joml.Vector3f
+import kotlin.math.round
 
-class CollisionCircle(private val owner: Renderable) {
+class CollisionCircle(private val owner: Renderable, val ownerScaleValue: Float) {
     //atribs
     private var bIsAllowedToCollide = false
     private val trueRadius = getOBJRadius()
+    private var weitesterPunkt = getWeitesterPunkt()
+    private var avergPos = getAvavergPose()
 
     //Getter
     fun getOwnerPosition(): Vector3f {
@@ -16,6 +19,69 @@ class CollisionCircle(private val owner: Renderable) {
         return trueRadius
     }
 
+    fun getWeitesterPunkt():Vector3f{
+        var highestX = 0.0f
+        var highestY = 0.0f
+        var highestZ = 0.0f
+        val vertexData = owner.meshes[0].getVertexData()
+
+        var helper = 0
+        for ((index, e) in vertexData.withIndex()) {
+            if((index + helper) < vertexData.size){
+                val X = vertexData[index + helper]
+                helper++
+                val Y = vertexData[index + helper]
+                helper++
+                val Z = vertexData[index + helper]
+                helper++
+
+                if (highestX < X) {
+                    highestX = X
+                }
+                if (highestY < Y) {
+                    highestY = Y
+                }
+                if (highestZ < Z) {
+                    highestZ = Z
+                }
+            }else{break}
+        }
+        System.out.println("HighestX:" + highestX)
+        System.out.println("HighestY:" + highestY)
+        System.out.println("HighestZ:" + highestZ)
+        return Vector3f(highestX,highestY,highestZ)
+    }
+
+    fun getAvavergPose(): Vector3f{
+        var highestX = 0.0f
+        var highestY = 0.0f
+        var highestZ = 0.0f
+        val vertexData = owner.meshes[0].getVertexData()
+
+        var helper = 0
+        for ((index, e) in vertexData.withIndex()) {
+            if((index + helper) < vertexData.size){
+                val X = vertexData[index + helper]
+                helper++
+                val Y = vertexData[index + helper]
+                helper++
+                val Z = vertexData[index + helper]
+                helper++
+
+                if (highestX < X) {
+                    highestX = X
+                }
+                if (highestY < Y) {
+                    highestY = Y
+                }
+                if (highestZ < Z) {
+                    highestZ = Z
+                }
+            }else{break}
+        }
+        System.out.println("AvergMiddle:" + Vector3f(highestX/vertexData.size,highestY/vertexData.size,highestZ/vertexData.size))
+        return Vector3f(highestX/vertexData.size,highestY/vertexData.size,highestZ/vertexData.size)
+    }
     fun getBIsAllowedToCollide(): Boolean {
         return bIsAllowedToCollide
     }
@@ -25,13 +91,13 @@ class CollisionCircle(private val owner: Renderable) {
         bIsAllowedToCollide = niceCollider
     }
 
+    fun setWeitesterPunkt(P:Vector3f){weitesterPunkt = P}
     //Functions
     fun getOBJCenter(): Vector3f {
 
         return Vector3f(0.0f)
     }
         fun getOBJRadius(): Float {
-            var radius = 0.0f;
             var highestX = 0.0f
             var highestY = 0.0f
             var highestZ = 0.0f
@@ -39,7 +105,7 @@ class CollisionCircle(private val owner: Renderable) {
 
             var helper = 0
             for ((index, e) in vertexData.withIndex()) {
-                if(!((index + helper) >= vertexData.size)){
+                if((index + helper) < vertexData.size){
                     val X = vertexData[index + helper]
                     helper++
                     val Y = vertexData[index + helper]
@@ -58,7 +124,7 @@ class CollisionCircle(private val owner: Renderable) {
                     }
                 }else{break}
             }
-            return owner.getPosition().distance(Vector3f(highestX,highestY,highestZ))
+            return getAvavergPose().distance(Vector3f(highestX,highestY,highestZ)) * ownerScaleValue
         }
 
 }
