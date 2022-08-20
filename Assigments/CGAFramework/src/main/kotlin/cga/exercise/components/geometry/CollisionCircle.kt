@@ -91,12 +91,7 @@ class CollisionCircle(private val owner: Renderable, val ownerScaleValue: Float)
         bIsAllowedToCollide = niceCollider
     }
 
-    fun setWeitesterPunkt(P:Vector3f){weitesterPunkt = P}
     //Functions
-    fun getOBJCenter(): Vector3f {
-
-        return Vector3f(0.0f)
-    }
         fun getOBJRadius(): Float {
             var highestX = 0.0f
             var highestY = 0.0f

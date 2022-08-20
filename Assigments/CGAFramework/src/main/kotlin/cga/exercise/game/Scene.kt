@@ -469,24 +469,23 @@ class Scene(private val window: GameWindow) {
         val second = colliderArray[1]
 
         System.out.println("____________DATA BLOCK START____________")
-        System.out.println("Position Dragon" + first.getOwnerPosition())
-        System.out.println("WeitesterPunkt:" + first.getWeitesterPunkt())
-        System.out.println("Radius:" + first.getRadius())
+        System.out.println("Position Dragon: " + first.getOwnerPosition())
+        System.out.println("WeitesterPunkt: " + first.getWeitesterPunkt())
+        System.out.println("Radius: " + first.getRadius())
 
-        System.out.println("Position Bike" + second.getOwnerPosition())
-        System.out.println("WeitesterPunkt:" + second.getWeitesterPunkt())
-        System.out.println("Radius:" + second.getRadius())
+        System.out.println("Position Bike: " + second.getOwnerPosition())
+        System.out.println("WeitesterPunkt: " + second.getWeitesterPunkt())
+        System.out.println("Radius: " + second.getRadius())
         System.out.println("_______ERGEBNISSE_______")
-        val distance = first.getOwnerPosition().distance(second.getOwnerPosition())
-        System.out.println("Distance:" + distance)
-        val totalRadius = first.getRadius() + second.getRadius()
-        System.out.println("totalRadius" + totalRadius)
 
-        if (distance < totalRadius){
+        val distance = first.getOwnerPosition().distance(second.getOwnerPosition())
+        val totalRadius = first.getRadius()+second.getRadius()
+        System.out.println("Distance:" + distance)
+        System.out.println("totalRadius: " + totalRadius)
+
+        if (totalRadius > distance){
             bDoseCollide = !(first.getBIsAllowedToCollide() && second.getBIsAllowedToCollide())
         }
-
-
         return bDoseCollide
     }
     fun cleanup() {}
