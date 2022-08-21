@@ -107,7 +107,7 @@ class Scene(private val window: GameWindow) {
 
         //__loade Ground__
         ground = loadGround()
-        ground.scale(Vector3f(80.0f,80.0f,80.0f))
+        ground.scale(Vector3f(60.0f,60.0f,60.0f))
 
         //__loade Bike__
         bike = loadModel("assets/Light Cycle/Light Cycle/HQ_Movie cycle.obj", Math.toRadians(-90.0f), Math.toRadians(90.0f), 0.0f) ?: throw IllegalArgumentException("Could not load the model")
@@ -183,13 +183,14 @@ class Scene(private val window: GameWindow) {
         dragonCollider = CollisionCircle(dragon,0.5f,2.8f)
         dragonCollider.setBIsAllowedToCollide(true)
         dragon.setCollider(dragonCollider)
+        dragon.setCollider(dragonCollider)
 
         bikeCollider = CollisionCircle(bike, 0.8f, 1.0f)
         bike.setCollider(bikeCollider)
 
         towerCollider0 = CollisionCircle(tower,0.0f,1.0f, Vector3f(0.0f,0.0f,0.0f))
-        towerCollider1 = CollisionCircle(tower,0.0f, 1.0f, Vector3f(0.0f,0.5f,0.0f))
-        towerCollider2 = CollisionCircle(tower,0.0f, 1.0f, Vector3f(0.0f,1.0f,0.0f))
+        towerCollider1 = CollisionCircle(tower,0.0f, 1.0f, Vector3f(0.0f,6.0f,0.0f))
+        towerCollider2 = CollisionCircle(tower,0.0f, 1.0f, Vector3f(0.0f,8.0f,0.0f))
 
         val ringScale = 0.5f
         val ringRadius = 2.5f
@@ -345,9 +346,9 @@ class Scene(private val window: GameWindow) {
         staticShader.setUniform("shadingColor", Vector3f(1.0f,1.0f,1.0f))
         tower.render(staticShader)
             //Ring
-        val x = Math.abs(Math.sin(t))
-        val z = x
-        val ringColor = Vector3f(x,z,0.0f)
+        val x = Math.abs(Math.sin(t/2))
+        val y = x
+        val ringColor = Vector3f(x,y,0.0f)
         staticShader.setUniform("shadingColor", ringColor)
         for (elem in ringArray){
             if(!elem.getCollider().getBCollided()){
@@ -443,11 +444,9 @@ class Scene(private val window: GameWindow) {
         oldMouseX = xpos
         oldMouseY = ypos
     }
-    fun onMouseScroll(xoffset: Double, yoffset: Double) {
-        val multyplier = 0.25f
-       camera.fov = camera.fov * xoffset.toFloat()*multyplier
-    }
+    fun onMouseScroll(xoffset: Double, yoffset: Double){
 
+    }
     fun getKugel(): Renderable{
         val SphereOBJ = loadOBJ("assets/models/kugel.obj")
         val d_atr1 = VertexAttribute(3, GL_FLOAT, 3 * 4, 0)     //position attribute //38505
@@ -585,7 +584,7 @@ class Scene(private val window: GameWindow) {
 
         val ringTex = Texture2D("assets/textures/ring.png", true)
             ringTex.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
-        val ringEmmit = Texture2D("assets/textures/ringEmmit.png", true)
+        val ringEmmit = Texture2D("assets/textures/ringEmmit2.png", true)
             ringEmmit.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
 
         val ringMat = Material(ringTex, ringEmmit, defaultSpecTex)
@@ -628,7 +627,7 @@ class Scene(private val window: GameWindow) {
 
         val towerDiff = Texture2D("assets/textures/TowerTextures/tower_square_7_Base_Color.png",  true)
         towerDiff.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
-        val towerSpec = Texture2D("assets/textures/TowerTextures/tower_square_7_Mixed_AO.png", true)
+        val towerSpec = Texture2D("assets/textures/specDark.png", true)
         towerSpec.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
 
         val towerMat = Material(towerDiff,defaultEmmitTex,towerSpec)
@@ -692,24 +691,15 @@ class Scene(private val window: GameWindow) {
     fun checkCollision(colliderArray : Array<CollisionCircle>) {
         var bAllowedToCollide = false
 
-        for (elem in colliderArray) {
-            System.out.println("Elem: " + elem)
-        }
-
         for ((index, elem) in colliderArray.withIndex()) {
-            System.out.println("SCHLEIFE 1")
-            System.out.println("Erstes: " + elem)
             for ((index2, element) in colliderArray.withIndex()) {
-                System.out.println("SCHLEIFE 2")
                 if (index + index2 +1>= colliderArray.size) {
                     break
                 }
                 val elem2 = colliderArray[index + index2 +1]
-                System.out.println("Zweites: " + elem2)
                 val distance = elem.getOwnerPosition().distance(elem2.getOwnerPosition())
                 val totalRadius = elem.getRadius() + elem2.getRadius()
                 if (distance < totalRadius) {
-                    System.out.println("Collision OBJ1: " + elem.getOwner() + "_____AND_____OBJ2: " + elem2.getOwner())
                     if ((elem.getOwner() == dragon) || (elem2.getOwner() == dragon)) {
                         bAllowedToCollide = (elem.getBIsAllowedToCollide() && elem2.getBIsAllowedToCollide())
                         if (!bAllowedToCollide) {
@@ -727,7 +717,6 @@ class Scene(private val window: GameWindow) {
                 }
             }
         }
-        System.out.println("____________________________________")
     }
             /*
         System.out.println("____________DATA BLOCK START____________")
