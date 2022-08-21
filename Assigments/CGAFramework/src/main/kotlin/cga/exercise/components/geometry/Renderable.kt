@@ -6,7 +6,10 @@ import cga.exercise.components.shader.ShaderProgram
  * Extends Transformable such that the object can render Mesh objects transformed by Transformable
  */
 class Renderable(val meshes: MutableList<Mesh> = mutableListOf()) : Transformable(parent = null), IRenderable {
+    private var collider: CollisionCircle? = null
 
+    fun setCollider(newCollider: CollisionCircle){collider = newCollider}
+    fun getCollider(): CollisionCircle{ return collider as CollisionCircle }
     /**
      * Renders all meshes attached to this Renderable, applying the transformation matrix to
      * each of them
