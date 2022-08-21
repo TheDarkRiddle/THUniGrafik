@@ -12,6 +12,8 @@ import cga.framework.GameWindow
 import cga.framework.ModelLoader.loadModel
 import cga.framework.OBJLoader.loadOBJ
 import org.joml.Math
+import org.joml.Math.cos
+import org.joml.Math.sin
 import org.joml.Vector2f
 import org.joml.Vector3f
 import org.lwjgl.BufferUtils
@@ -39,6 +41,7 @@ class Scene(private val window: GameWindow) {
     private val bike: Renderable
     private val dragon: Renderable
     private val tower: Renderable
+    //private val tree: Renderable
 
     //Collider
     private val colliderArrray: Array<CollisionCircle>
@@ -58,8 +61,8 @@ class Scene(private val window: GameWindow) {
     private val groundMaterial: Material
     private val groundColor: Vector3f
     private val groundDiff2: Texture2D
-    private  val blendMap: Texture2D
-
+    private val blendMap: Texture2D
+    //private val treeMat: Material
 
     //Lights
     private val bikePointLight: PointLight
@@ -164,22 +167,40 @@ class Scene(private val window: GameWindow) {
         }
         tower.scale(Vector3f(3.0f,3.0f,3.0f))
         tower.translate(Vector3f(0.0f,0.0f,10.0f))
+        //___loade tree obj___
+        /*val treeOBJ = loadOBJ("assets/models/tree_obj.obj")
 
+        val treeDiff = Texture2D("assets/textures/ground/grün.png",  true)
+        treeDiff.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
+        treeMat = Material(treeDiff,defaultEmmitTex,defaultSpecTex)
+
+        val tree_atr1 = VertexAttribute(3, GL_FLOAT, stride, 0)     //position attribute //38505
+        val tree_atr2 = VertexAttribute(2, GL_FLOAT, stride, 3 * 4) //texture coordinate attribute
+        val tree_atr3 = VertexAttribute(3, GL_FLOAT, stride, 5 * 4) //normal attribute
+        val tree_vertexAttributes = arrayOf(tree_atr1, tree_atr2, tree_atr3)
+
+        tree = Renderable()
+        for (m in treeOBJ.objects[0].meshes) {
+            val mesh = Mesh(m.vertexData, m.indexData, tree_vertexAttributes, treeMat)
+            tree.meshes.add(mesh)
+        }
+        tree.scale(Vector3f(3.0f,3.0f,3.0f))
+        tree.translate(Vector3f(0.0f,10.0f,4.0f))*/
         //loade Collider
         dragonCollider = CollisionCircle(dragon,0.5f)
         bikeCollider = CollisionCircle(bike, 0.8f)
         colliderArrray = arrayOf(dragonCollider, bikeCollider)
 
         //Collider Sphere
-        helperSphere = getSphere()
+        helperSphere = getCube()
         helperSphere.parent = dragon
         helperSphere.translate(dragon.getPosition())
-        helperSphere.scale(Vector3f(11.168262f))
+        helperSphere.scale(Vector3f(5.162451f))
 
-        helperSphereTwo = getSphere()
+        helperSphereTwo = getCube()
         helperSphereTwo.parent = bike
         helperSphereTwo.translate(bike.getPosition())
-        helperSphereTwo.scale(Vector3f(1.69667f))
+        helperSphereTwo.scale(Vector3f(1.9370053f))
 
         //setup camera
         camera = TronCamera(
@@ -301,6 +322,8 @@ class Scene(private val window: GameWindow) {
             //tower
         staticShader.setUniform("shadingColor", Vector3f(1.0f,1.0f,1.0f))
         tower.render(staticShader)
+        //tree
+        //tree.render(staticShader)
 
     }
     fun genCubeMap(paths: Array<String>): Int {
@@ -386,19 +409,139 @@ class Scene(private val window: GameWindow) {
     }
     fun getSphere():Renderable{
 
-        val SphereOBJ = loadOBJ("assets/models/newSphere.obj")
+        val SphereOBJ = loadOBJ("assets/models/sphere.obj")
         val d_atr1 = VertexAttribute(3, GL_FLOAT, 3 * 4, 0)     //position attribute //38505
         val d_atr2 = VertexAttribute(2, GL_FLOAT, 3 * 4, 3 * 4) //texture coordinate attribute
         val d_atr3 = VertexAttribute(3, GL_FLOAT, 3 * 4, 5 * 4) //normal attribute
         val d_vertexAttributes = arrayOf(d_atr1, d_atr2, d_atr3)
 
+
+        val defaultEmmitTex = Texture2D("assets/textures/defaultEmmitTex.png",true)
+        defaultEmmitTex.setTexParams(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
+        val defaultSpecTex = Texture2D("assets/textures/defaultSpecTex.png",true)
+        defaultSpecTex.setTexParams(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
+
+        val Diff = Texture2D("assets/textures/ground/rot.png", true) //rot.png
+        Diff.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
+
+
+        val sphereMat = Material(Diff,defaultSpecTex,defaultEmmitTex)
         val Sphere = Renderable()
         for (m in SphereOBJ.objects[0].meshes) {
-            val mesh = Mesh(m.vertexData, m.indexData, d_vertexAttributes)
+            val mesh = Mesh(m.vertexData, m.indexData, d_vertexAttributes,sphereMat)
             Sphere.meshes.add(mesh)
         }
 
         return Sphere
+    }
+
+    fun getCube(): Renderable{
+        val SphereOBJ = loadOBJ("assets/models/flube.obj")
+        val d_atr1 = VertexAttribute(3, GL_FLOAT, 3 * 4, 0)     //position attribute //38505
+        val d_atr2 = VertexAttribute(2, GL_FLOAT, 3 * 4, 3 * 4) //texture coordinate attribute
+        val d_atr3 = VertexAttribute(3, GL_FLOAT, 3 * 4, 5 * 4) //normal attribute
+        val d_vertexAttributes = arrayOf(d_atr1, d_atr2, d_atr3)
+
+
+        val defaultEmmitTex = Texture2D("assets/textures/defaultEmmitTex.png",true)
+        defaultEmmitTex.setTexParams(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
+        val defaultSpecTex = Texture2D("assets/textures/defaultSpecTex.png",true)
+        defaultSpecTex.setTexParams(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
+
+        val Diff = Texture2D("assets/textures/ground/rot.png", true) //rot.png
+        Diff.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
+
+
+        val sphereMat = Material(Diff,defaultSpecTex,defaultEmmitTex)
+        val Sphere = Renderable()
+        for (m in SphereOBJ.objects[0].meshes) {
+            val mesh = Mesh(m.vertexData, m.indexData, d_vertexAttributes,sphereMat)
+            Sphere.meshes.add(mesh)
+        }
+
+        return Sphere
+    }
+    fun getIcoSphere(): Renderable{
+        val stacks = 20
+        val slices = 20
+        val PI = 3.14f
+        var helper = 0
+        //std::vector<float> positions;
+        var positions = FloatArray(60)
+        var indices = IntArray(420*6)
+        //std::vector<GLuint> indices;
+
+        // loop through stacks.
+        for (i in 0..stacks){
+            if(i + helper > stacks){
+                break}
+            val V = i.toFloat()/ stacks.toFloat()
+            val phi = V * PI;
+
+            // loop through the slices.
+            for (j in 0..slices){
+
+            val U = j.toFloat() / slices.toFloat()
+            val theta = U * (PI * 2)
+
+            // use spherical coordinates to calculate the positions.
+            val x = cos(theta) * sin(phi);
+            val y = cos(phi);
+            val z = sin(theta) * sin(phi);
+
+               if (j + helper == 60){
+                   break
+               }
+               positions[j + helper] = x
+               helper++
+               positions[j + helper] = y
+               helper++
+               positions[j + helper] = z
+               helper++
+            }
+
+        }
+
+
+        // Calc The Index Positions
+        var i = 0;
+        helper = 0
+        while ( i < slices * stacks + slices){
+            if (i + helper >= 2520){
+                break
+            }
+            indices[i+helper] = i
+            helper++
+            indices[i+helper] = i + slices + 1
+            helper++
+            indices[i+helper] = i + slices
+            helper++
+
+            indices[i+helper] = i + slices + 1
+            helper++
+            indices[i+helper] = i
+            helper++
+            indices[i+helper] = i + 1
+            helper++
+            i++
+        }
+
+        val defaultEmmitTex = Texture2D("assets/textures/defaultEmmitTex.png",true)
+        defaultEmmitTex.setTexParams(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
+        val defaultSpecTex = Texture2D("assets/textures/defaultSpecTex.png",true)
+        defaultSpecTex.setTexParams(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
+
+        val Diff = Texture2D("assets/textures/ground/rot.png", true) //rot.png
+        Diff.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
+
+
+        val sphereMat = Material(Diff,defaultSpecTex,defaultEmmitTex)
+
+        val superSphereVAO = VertexAttribute(3, GL_FLOAT, 3 * 4, 0)     //position attribute //38505
+        val superSphereAttributes = arrayOf(superSphereVAO)
+        val superSphereMash = Mesh(positions, indices, superSphereAttributes, sphereMat)
+
+        return  Renderable(mutableListOf(superSphereMash))
     }
     fun loadeSkyBox(){
         //SKYBOX
@@ -464,10 +607,7 @@ class Scene(private val window: GameWindow) {
                 }
 
             }
-        }*/
-        val first = colliderArray[0]
-        val second = colliderArray[1]
-
+        }
         System.out.println("____________DATA BLOCK START____________")
         System.out.println("Position Dragon: " + first.getOwnerPosition())
         System.out.println("WeitesterPunkt: " + first.getWeitesterPunkt())
@@ -478,10 +618,15 @@ class Scene(private val window: GameWindow) {
         System.out.println("Radius: " + second.getRadius())
         System.out.println("_______ERGEBNISSE_______")
 
-        val distance = first.getOwnerPosition().distance(second.getOwnerPosition())
-        val totalRadius = first.getRadius()+second.getRadius()
         System.out.println("Distance:" + distance)
         System.out.println("totalRadius: " + totalRadius)
+
+        */
+        val first = colliderArray[0]
+        val second = colliderArray[1]
+
+        val distance = first.getOwnerPosition().distance(second.getOwnerPosition())
+        val totalRadius = first.getRadius()+second.getRadius()
 
         if (totalRadius > distance){
             bDoseCollide = !(first.getBIsAllowedToCollide() && second.getBIsAllowedToCollide())

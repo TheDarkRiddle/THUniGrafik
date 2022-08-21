@@ -119,8 +119,6 @@ class CollisionCircle(private val owner: Renderable, val ownerScaleValue: Float)
                     }
                 }else{break}
             }
-            return getAvavergPose().distance(Vector3f(highestX,highestY,highestZ)) * ownerScaleValue
+            return getOwnerPosition().distance(Vector3f(highestX,highestY,highestZ)) * ownerScaleValue
         }
-
 }
-

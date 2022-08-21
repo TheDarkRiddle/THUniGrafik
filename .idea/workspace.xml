@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="29943094-a2a4-464f-923e-b5d44aa3314f" name="Changes" comment="Fix Für Lapptop">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assigments/CGAFramework/assets/models/sphere.obj" beforeDir="false" afterPath="$PROJECT_DIR$/Assigments/CGAFramework/assets/models/sphere.obj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assigments/CGAFramework/src/main/kotlin/cga/exercise/components/geometry/CollisionCircle.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Assigments/CGAFramework/src/main/kotlin/cga/exercise/components/geometry/CollisionCircle.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assigments/CGAFramework/src/main/kotlin/cga/exercise/game/Scene.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Assigments/CGAFramework/src/main/kotlin/cga/exercise/game/Scene.kt" afterDir="false" />
     </list>
@@ -184,7 +185,37 @@
     <MESSAGE value="Fix Für Lapptop" />
     <option name="LAST_COMMIT_MESSAGE" value="Fix Für Lapptop" />
   </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/Assigments/CGAFramework/src/main/kotlin/cga/exercise/game/Scene.kt</url>
+          <line>525</line>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/Assigments/CGAFramework/src/main/kotlin/cga/exercise/game/Scene.kt</url>
+          <line>474</line>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/Assigments/CGAFramework/src/main/kotlin/cga/exercise/game/Scene.kt</url>
+          <line>508</line>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <watches-manager>
+      <configuration name="JetRunConfigurationType">
+        <watch expression="positions" />
+        <watch expression="helper" />
+        <watch expression="cos(theta)" />
+        <watch expression="sin(phi)" />
+        <watch expression="i" />
+      </configuration>
+    </watches-manager>
+  </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/THUniGrafik$MainKt.ic" NAME="MainKt Coverage Results" MODIFIED="1659604692891" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/THUniGrafik$MainKt.ic" NAME="MainKt Coverage Results" MODIFIED="1661036955250" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>
 </project>
