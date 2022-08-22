@@ -14,9 +14,9 @@ class CollisionCircle(private val owner: Renderable, val ownerScaleValue: Float,
     //Getter
     fun getOwnerPosition(): Vector3f {
         if (shiftValue == null){
-            return owner.getPosition()
+            return owner.getWorldPosition()
         }else{
-            return owner.getPosition().add(shiftValue)
+            return owner.getWorldPosition().add(shiftValue)
         }
     }
     fun getOwner(): Renderable{return owner}

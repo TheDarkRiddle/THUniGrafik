@@ -45,6 +45,7 @@ class Scene(private val window: GameWindow) {
     private val ring1: Renderable
     private val ring2: Renderable
     private val ring3: Renderable
+    private val cake: Renderable
     //private val tree: Renderable
 
     //Collider
@@ -70,6 +71,7 @@ class Scene(private val window: GameWindow) {
     //Material
     private var groundMaterial: Material? = null
     private var groundDiff2: Texture2D? = null
+    private var cakeTop: Texture2D? = null
     private var blendMap: Texture2D? = null
     private val defaultEmmitTex: Texture2D
     private val defaultSpecTex: Texture2D
@@ -79,6 +81,9 @@ class Scene(private val window: GameWindow) {
     //hepler
     val stride = 8 * 4
     val spawn: Vector3f = Vector3f(2.0f, 4.0f, 5.0f)
+    //val spanwX = 2.0f
+    //val spawnY = 4.0f
+    //val spawnZ = 5.0f
     val ringArray: Array<Renderable>
 
     //Lights
@@ -129,6 +134,10 @@ class Scene(private val window: GameWindow) {
         tower.scale(Vector3f(3.0f,3.0f,3.0f))
         tower.translate(Vector3f(0.0f,0.0f,10.0f))
 
+        //___Load Cake___
+
+        cake = loadeCake()
+        cake.translate(Vector3f(0.0f,2.0f,0.0f))
         //___loade Ring obj___
         //+Z hinten -X rechts
         ring0 = loadRing()
@@ -315,6 +324,13 @@ class Scene(private val window: GameWindow) {
             blendingShader.setUniform("blendMap", 4)
             ground.render(blendingShader)
         }
+        if (cakeTop == null){
+            cakeTop!!.bind(3)
+            blendingShader.setUniform("secondTexture", 3)
+        }
+        blendingShader.setUniform("shadingColor", Vector3f(1.0f,1.0f,1.0f))
+        cake.render(blendingShader)
+
 
         staticShader.use();
 
@@ -355,6 +371,7 @@ class Scene(private val window: GameWindow) {
                 elem.render(staticShader)
             }
         }
+        //cake
             //tree
         //tree.render(staticShader)
 
@@ -445,7 +462,13 @@ class Scene(private val window: GameWindow) {
         oldMouseY = ypos
     }
     fun onMouseScroll(xoffset: Double, yoffset: Double){
-
+        /*localCam!!.fov -= yoffset.toFloat()
+        if (localCam!!.fov <= 45.0f){
+            localCam!!.fov = 45.0f;
+        }
+        if (localCam!!.fov >= 120){
+            localCam!!.fov = 120.0f
+        }*/
     }
     fun getKugel(): Renderable{
         val SphereOBJ = loadOBJ("assets/models/kugel.obj")
@@ -600,7 +623,32 @@ class Scene(private val window: GameWindow) {
             render.meshes.add(mesh)
         }
         return render
+    }
 
+    private fun loadeCake(): Renderable{
+        val ringOBJ = loadOBJ("assets/models/cake.obj")
+
+        val cakeDiff = Texture2D("assets/textures/cake/cake_diff.png", true)
+        cakeDiff.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
+        val cakeSpec = Texture2D("assets/textures/cake/cake_spec.png", true)
+        cakeSpec.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
+
+        cakeTop = Texture2D("assets/textures/cake/cake_top.png",true)
+        cakeSpec.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
+
+        val cakeMat = Material(cakeDiff, defaultEmmitTex, cakeSpec)
+
+        val atr1 = VertexAttribute(3, GL_FLOAT, stride, 0)     //position attribute //38505
+        val atr2 = VertexAttribute(2, GL_FLOAT, stride, 3 * 4) //texture coordinate attribute
+        val atr3 = VertexAttribute(3, GL_FLOAT, stride, 5 * 4) //normal attribute
+
+        val vertexAttribute = arrayOf(atr1, atr2, atr3)
+        val render = Renderable()
+        for (m in ringOBJ.objects[0].meshes) {
+            val mesh = Mesh(m.vertexData, m.indexData, vertexAttribute, cakeMat)
+            render.meshes.add(mesh)
+        }
+        return render
     }
     private fun loadDragon(): Renderable{
         val dragonOBJ = loadOBJ("assets/models/dragonCentered.obj")
@@ -742,8 +790,8 @@ class Scene(private val window: GameWindow) {
             }*/
 
         private fun dragonToSpawn() {
-            dragon.translate(spawn
-                .sub(dragon.getPosition()))
+            System.out.println("Touched the tower")
+            dragon.translate(dragon.getWorldPosition().add(spawn))
         }
         fun cleanup() {}
     }
