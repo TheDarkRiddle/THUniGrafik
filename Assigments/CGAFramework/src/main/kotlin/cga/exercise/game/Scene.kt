@@ -9,11 +9,8 @@ import cga.exercise.components.shader.ShaderProgram
 import cga.exercise.components.texture.Texture2D
 import cga.framework.GLError
 import cga.framework.GameWindow
-import cga.framework.ModelLoader.loadModel
 import cga.framework.OBJLoader.loadOBJ
 import org.joml.Math
-import org.joml.Math.cos
-import org.joml.Math.sin
 import org.joml.Vector2f
 import org.joml.Vector3f
 import org.lwjgl.BufferUtils
@@ -38,31 +35,30 @@ class Scene(private val window: GameWindow) {
 
     //Objects
     private val ground: Renderable
-    private val bike: Renderable
     private val dragon: Renderable
     private val tower: Renderable
+    private val tower1: Renderable
     private val ring0: Renderable
     private val ring1: Renderable
     private val ring2: Renderable
     private val ring3: Renderable
+    private val ring4: Renderable
     private val cake: Renderable
-    //private val tree: Renderable
 
     //Collider
     private val colliderArrray: Array<CollisionCircle>
     private val dragonCollider: CollisionCircle
-    private val bikeCollider: CollisionCircle
     private val towerCollider0: CollisionCircle
     private val towerCollider1: CollisionCircle
     private val towerCollider2: CollisionCircle
+    private val tower1Collider0: CollisionCircle
+    private val tower1Collider1: CollisionCircle
+    private val tower1Collider2: CollisionCircle
     private val ringCollider0: CollisionCircle
     private val ringCollider1: CollisionCircle
     private val ringCollider2: CollisionCircle
     private val ringCollider3: CollisionCircle
-
-    //helper
-    //private val dragonHelper: Renderable
-    //private val ciyleHelper: Renderable
+    private val ringCollider4: CollisionCircle
 
     //SKYBOX
     private var skyBox: Mesh? = null
@@ -71,26 +67,18 @@ class Scene(private val window: GameWindow) {
     //Material
     private var groundMaterial: Material? = null
     private var groundDiff2: Texture2D? = null
-    private var cakeTop: Texture2D? = null
     private var blendMap: Texture2D? = null
     private val defaultEmmitTex: Texture2D
     private val defaultSpecTex: Texture2D
     private val groundColor: Vector3f
-    //private val treeMat: Material
 
     //hepler
-    val stride = 8 * 4
+    private val stride = 8 * 4
     val spawn: Vector3f = Vector3f(2.0f, 4.0f, 5.0f)
-    //val spanwX = 2.0f
-    //val spawnY = 4.0f
-    //val spawnZ = 5.0f
     val ringArray: Array<Renderable>
 
     //Lights
-    private val bikePointLight: PointLight
     private val pointLightList = mutableListOf<PointLight>()
-
-    private val bikeSpotLight: SpotLight
     private val spotLightList = mutableListOf<SpotLight>()
 
     //camera
@@ -114,30 +102,28 @@ class Scene(private val window: GameWindow) {
         ground = loadGround()
         ground.scale(Vector3f(60.0f,60.0f,60.0f))
 
-        //__loade Bike__
-        bike = loadModel("assets/Light Cycle/Light Cycle/HQ_Movie cycle.obj", Math.toRadians(-90.0f), Math.toRadians(90.0f), 0.0f) ?: throw IllegalArgumentException("Could not load the model")
-        bike.scale(Vector3f(0.8f, 0.8f, 0.8f))
-        System.out.println("Bike"+bike)
-
         //___loade Skybox___
             loadSkyBox()
 
         //___loade dragon obj___
         dragon = loadDragon()
-        dragon.translate(Vector3f(2.0f, 4.0f, 5.0f))
+        dragon.translate(Vector3f(2.0f, 4.0f, 8.0f))
         dragon.scale(Vector3f(0.5f,0.5f,0.5f))
         dragon.rotate(0.0f, Math.toRadians(90.0f),0.0f)
-        System.out.println("Dragon"+dragon)
         
         //___loade Tower obj___
         tower = loadTower()
         tower.scale(Vector3f(3.0f,3.0f,3.0f))
         tower.translate(Vector3f(0.0f,0.0f,10.0f))
 
-        //___Load Cake___
+        tower1 = loadTower()
+        tower1.scale(Vector3f(3.0f,3.0f,3.0f))
+        tower1.translate(Vector3f(2.0f,0.0f,-10.0f))
 
+        //___Load Cake___
         cake = loadeCake()
-        cake.translate(Vector3f(0.0f,2.0f,0.0f))
+        cake.translate(Vector3f(0.0f,20.0f,0.0f))
+
         //___loade Ring obj___
         //+Z hinten -X rechts
         ring0 = loadRing()
@@ -145,61 +131,47 @@ class Scene(private val window: GameWindow) {
         ring0.translate(Vector3f(-9.0f,6.0f,0.0f))
         ring0.rotate(0.0f,Math.toRadians(0.0f),0.0f)
         ring0.scale(Vector3f(0.5f))
-        System.out.println("Ring0"+ring0)
 
         ring1 = loadRing()
         ring1.translate(tower.getPosition())
         ring1.translate(Vector3f(-7.0f,12.0f,5.0f))
         ring1.scale(Vector3f(0.5f))
         ring1.rotate(0.0f,Math.toRadians(45.0f),0.0f)
-        System.out.println("Ring1"+ring1)
 
         ring2 = loadRing()
         ring2.translate(tower.getPosition())
         ring2.translate(Vector3f(0.0f,18.0f,8.0f))
         ring2.scale(Vector3f(0.5f))
         ring2.rotate(0.0f,Math.toRadians(90.0f),0.0f)
-        System.out.println("Ring2"+ring2)
 
         ring3 = loadRing()
         ring3.translate(tower.getPosition())
         ring3.translate(Vector3f(9.0f,16.0f,4.0f))
         ring3.scale(Vector3f(0.5f))
         ring3.rotate(0.0f,Math.toRadians(-45.0f),0.0f)
-        System.out.println("Ring3"+ring3)
 
-        ringArray = arrayOf(ring0, ring1, ring2, ring3)
-        //___loade tree obj___
-        /*val treeOBJ = loadOBJ("assets/models/tree_obj.obj")
+        ring4 = loadRing()
+        ring4.translate(tower1.getPosition())
+        ring4.translate(Vector3f(9.0f,15.5f,4.0f))
+        ring4.scale(Vector3f(0.5f))
+        ring4.rotate(Math.toRadians(90.0f),Math.toRadians(0.0f),0.0f)
 
-        val treeDiff = Texture2D("assets/textures/ground/grün.png",  true)
-        treeDiff.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
-        treeMat = Material(treeDiff,defaultEmmitTex,defaultSpecTex)
+        ringArray = arrayOf(ring0, ring1, ring2, ring3, ring4)
 
-        val tree_atr1 = VertexAttribute(3, GL_FLOAT, stride, 0)     //position attribute //38505
-        val tree_atr2 = VertexAttribute(2, GL_FLOAT, stride, 3 * 4) //texture coordinate attribute
-        val tree_atr3 = VertexAttribute(3, GL_FLOAT, stride, 5 * 4) //normal attribute
-        val tree_vertexAttributes = arrayOf(tree_atr1, tree_atr2, tree_atr3)
 
-        tree = Renderable()
-        for (m in treeOBJ.objects[0].meshes) {
-            val mesh = Mesh(m.vertexData, m.indexData, tree_vertexAttributes, treeMat)
-            tree.meshes.add(mesh)
-        }
-        tree.scale(Vector3f(3.0f,3.0f,3.0f))
-        tree.translate(Vector3f(0.0f,10.0f,4.0f))*/
         //loade Collider
         dragonCollider = CollisionCircle(dragon,0.5f,2.8f)
         dragonCollider.setBIsAllowedToCollide(true)
         dragon.setCollider(dragonCollider)
         dragon.setCollider(dragonCollider)
 
-        bikeCollider = CollisionCircle(bike, 0.8f, 1.0f)
-        bike.setCollider(bikeCollider)
-
         towerCollider0 = CollisionCircle(tower,0.0f,1.0f, Vector3f(0.0f,0.0f,0.0f))
         towerCollider1 = CollisionCircle(tower,0.0f, 1.0f, Vector3f(0.0f,6.0f,0.0f))
         towerCollider2 = CollisionCircle(tower,0.0f, 1.0f, Vector3f(0.0f,8.0f,0.0f))
+
+        tower1Collider0 = CollisionCircle(tower1,0.0f,1.0f, Vector3f(0.0f,0.0f,0.0f))
+        tower1Collider1 = CollisionCircle(tower1,0.0f, 1.0f, Vector3f(0.0f,6.0f,0.0f))
+        tower1Collider2 = CollisionCircle(tower1,0.0f, 1.0f, Vector3f(0.0f,8.0f,0.0f))
 
         val ringScale = 0.5f
         val ringRadius = 2.5f
@@ -219,18 +191,13 @@ class Scene(private val window: GameWindow) {
         ringCollider3.setBIsAllowedToCollide(true)
         ring3.setCollider(ringCollider3)
 
-        colliderArrray = arrayOf(dragonCollider, bikeCollider, towerCollider0, towerCollider1, towerCollider2, ringCollider0, ringCollider1, ringCollider2, ringCollider3)
+        ringCollider4 = CollisionCircle(ring4, ringScale, ringRadius)
+        ringCollider4.setBIsAllowedToCollide(true)
+        ring4.setCollider(ringCollider4)
 
-        /*
-        //visual collider
-        dragonHelper = getKugel()
-        dragonHelper.parent = dragon
-        dragonHelper.translate(Vector3f(0.0f))
-        dragonHelper.scale(Vector3f(2.8f))
-        ciyleHelper = getKugel()
-        ciyleHelper.parent = bike
-        ciyleHelper.translate(Vector3f(0.0f))
-        */
+        colliderArrray = arrayOf(dragonCollider, towerCollider0, towerCollider1, towerCollider2, tower1Collider0, tower1Collider1, tower1Collider2, ringCollider0, ringCollider1, ringCollider2, ringCollider3, ringCollider4)
+
+
         //setup camera
         camera = TronCamera(
                 custom(window.framebufferWidth, window.framebufferHeight),
@@ -244,31 +211,19 @@ class Scene(private val window: GameWindow) {
                 0.1f,
                 100.0f
         )
-        camTwo.parent = bike
+        camTwo.parent = dragon
         camTwo.rotate(Math.toRadians(0.0f), Math.toRadians(180.0f), 0.0f)
+        camTwo.translate(Vector3f(0.0f, 6.0f, -5.0f))
         camera.parent = dragon
         camera.rotate(Math.toRadians(0.0f), Math.toRadians(180.0f), 0.0f)
         camera.translate(Vector3f(0.0f, 8.0f, 0.0f))
 
         groundColor = Vector3f(1.0f,1.0f,1.0f)
 
-        //bike point light
-        bikePointLight = PointLight("pointLight[${pointLightList.size}]", Vector3f(0.0f, 2.0f, 0.0f), Vector3f(0.0f, 0.5f, 0.0f))
-        bikePointLight.parent = bike
-        pointLightList.add(bikePointLight)
-
-        //bike spot light
-        bikeSpotLight = SpotLight("spotLight[${spotLightList.size}]", Vector3f(3.0f, 3.0f, 3.0f), Vector3f(0.0f, 1.0f, -2.0f), Math.toRadians(20.0f), Math.toRadians(30.0f))
-        bikeSpotLight.rotate(Math.toRadians(-10.0f), 0.0f, 0.0f)
-        bikeSpotLight.parent = bike
-        spotLightList.add(bikeSpotLight)
-
         // additional lights in the scene
-        pointLightList.add(PointLight("pointLight[${pointLightList.size}]",Vector3f(100.0f,100.0f,100.0f), Vector3f(0.0f,50.0f,0.0f)))
-        pointLightList.add(PointLight("pointLight[${pointLightList.size}]", Vector3f(0.0f, 2.0f, 2.0f), Vector3f(-10.0f, 2.0f, -10.0f)))
-        pointLightList.add(PointLight("pointLight[${pointLightList.size}]", Vector3f(2.0f, 0.0f, 0.0f), Vector3f(10.0f, 2.0f, 10.0f)))
-        spotLightList.add(SpotLight("spotLight[${spotLightList.size}]", Vector3f(10.0f, 20.0f, 20.0f), Vector3f(6.0f, 0.5f, 4.0f), Math.toRadians(20.0f), Math.toRadians(30.0f)))
-        spotLightList.last().rotate(Math.toRadians(20f), Math.toRadians(60.0f), 0f)
+        pointLightList.add(PointLight("pointLight[${pointLightList.size}]",Vector3f(30.0f,30.0f,30.0f), Vector3f(0.0f,40.0f,0.0f)))
+        pointLightList.add(PointLight("pointLight[${pointLightList.size}]", Vector3f(30.0f,30.0f,30.0f), tower.getPosition().add(Vector3f(0.0f,40.0f,0.0f))))
+        pointLightList.add(PointLight("pointLight[${pointLightList.size}]", Vector3f(30.0f,30.0f,30.0f), tower.getPosition().add(Vector3f(10.0f,40.0f,0.0f))))
 
         //initial opengl state
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f); GLError.checkThrow()
@@ -291,14 +246,14 @@ class Scene(private val window: GameWindow) {
         if(skyBox != null && skyBoxTexture != null){
             cubeMapShader.use()
             localCam!!.bind(cubeMapShader)
-            glDepthFunc(GL_LEQUAL); //GLError.checkThrow()
+            glDepthFunc(GL_LEQUAL) //GLError.checkThrow()
             glDepthMask(false)
             glBindTexture(GL_TEXTURE_CUBE_MAP, skyBoxTexture!!)
             cubeMapShader.setUniform("skyBox", skyBoxTexture!!)
             skyBox!!.render(cubeMapShader)
             glDepthMask(true)
 
-            glDepthFunc(GL_LESS); //GLError.checkThrow()
+            glDepthFunc(GL_LESS) //GLError.checkThrow()
             staticShader.use()
             localCam!!.bind(staticShader)
         }
@@ -324,19 +279,7 @@ class Scene(private val window: GameWindow) {
             blendingShader.setUniform("blendMap", 4)
             ground.render(blendingShader)
         }
-        if (cakeTop == null){
-            cakeTop!!.bind(3)
-            blendingShader.setUniform("secondTexture", 3)
-        }
-        blendingShader.setUniform("shadingColor", Vector3f(1.0f,1.0f,1.0f))
-        cake.render(blendingShader)
-
-
-        staticShader.use();
-
-        // TODO 4.5 Verstehen: Wie führen die hier verwendeten Funktionen zu dem Regenbogen-Effekt über die Zeit?
-        val changingColor = Vector3f(Math.abs(Math.sin(t)), 0f, Math.abs(Math.cos(t)))
-        bikePointLight.lightColor = changingColor
+        staticShader.use()
 
         // bind lights
         for (pointLight in pointLightList) {
@@ -349,18 +292,19 @@ class Scene(private val window: GameWindow) {
         staticShader.setUniform("numSpotLights", spotLightList.size)
 
         // render objects
-            //bike
-        staticShader.setUniform("shadingColor", changingColor)
-        bike.render(staticShader)
             //dragon
         staticShader.setUniform("shadingColor", Vector3f(1.0f,1.0f,1.0f))
         dragon.render(staticShader)
         staticShader.setUniform("shadingColor", Vector3f(1.0f,0.0f,0.0f))
-        //dragonHelper.render(staticShader)
-        //ciyleHelper.render(staticShader)
             //tower
         staticShader.setUniform("shadingColor", Vector3f(1.0f,1.0f,1.0f))
         tower.render(staticShader)
+        tower1.render(staticShader)
+            //cake
+        if (checkRings()){
+            staticShader.setUniform("shadingColor", Vector3f(1.0f,1.0f,1.0f))
+            cake.render(staticShader)
+        }
             //Ring
         val x = Math.abs(Math.sin(t/2))
         val y = x
@@ -371,10 +315,6 @@ class Scene(private val window: GameWindow) {
                 elem.render(staticShader)
             }
         }
-        //cake
-            //tree
-        //tree.render(staticShader)
-
     }
     fun genCubeMap(paths: Array<String>): Int {
         val CubeMapTextureID = glGenTextures()
@@ -401,6 +341,15 @@ class Scene(private val window: GameWindow) {
 
         return CubeMapTextureID
     }
+    fun checkRings(): Boolean{
+        var ringsCollided = 0
+        for (ring in ringArray){
+            if (ring.getCollider().getBCollided() == true){
+                ringsCollided++
+            }
+        }
+        return ringArray.size == ringsCollided
+    }
     fun update(dt: Float, t: Float) {
         var moveMul = 11.0f
         val rotateMul = 0.5f * Math.PI.toFloat()
@@ -423,7 +372,7 @@ class Scene(private val window: GameWindow) {
         if (window.getKeyState(GLFW_KEY_LEFT_SHIFT)) {
             dragon.translate(Vector3f(0.0f,-dt * moveMul,0.0f))
         }
-        if(!window.getKeyState(GLFW_KEY_W) &&  !window.getKeyState(GLFW_KEY_SPACE)){
+        if(!window.getKeyState(GLFW_KEY_W) &&  !window.getKeyState(GLFW_KEY_SPACE) &&  !window.getKeyState(GLFW_KEY_S)){
             if(dragon.getPosition().y >= ground.getPosition().y){
                 dragon.translate(Vector3f(0.0f,gravity,0.0f))
             }
@@ -434,11 +383,26 @@ class Scene(private val window: GameWindow) {
         if(window.getKeyState(GLFW_KEY_2)){
             camCount = 1
         }
+        if(window.getKeyState(GLFW_KEY_3)){
+            if (localCam != null) {
+                localCam!!.fov = Math.toRadians(25.0f)
+            }
+        }
+        if(window.getKeyState(GLFW_KEY_4)){
+            if (localCam != null){
+                localCam!!.fov = Math.toRadians(90.0f)
+            }
+        }
 
         //collision detection
         checkCollision(colliderArrray)
 
         //animation
+        if (checkRings()){
+            cake.rotate(0.0f,0.01f,0.0f)
+        }
+        ring4.rotateAroundPoint(0.0f,0.01f,0.0f,tower1.getPosition())
+
         for (elem in ringArray){
             if(!elem.getCollider().getBCollided()){
                 elem.rotate(0.0f,0.0f, Math.toRadians(1.0f))
@@ -462,118 +426,17 @@ class Scene(private val window: GameWindow) {
         oldMouseY = ypos
     }
     fun onMouseScroll(xoffset: Double, yoffset: Double){
-        /*localCam!!.fov -= yoffset.toFloat()
-        if (localCam!!.fov <= 45.0f){
-            localCam!!.fov = 45.0f;
+        /*
+        if(localCam != null){
+            localCam!!.fov -= Math.toRadians(yoffset).toFloat()
         }
-        if (localCam!!.fov >= 120){
-            localCam!!.fov = 120.0f
-        }*/
-    }
-    fun getKugel(): Renderable{
-        val SphereOBJ = loadOBJ("assets/models/kugel.obj")
-        val d_atr1 = VertexAttribute(3, GL_FLOAT, 3 * 4, 0)     //position attribute //38505
-        val d_atr2 = VertexAttribute(2, GL_FLOAT, 3 * 4, 3 * 4) //texture coordinate attribute
-        val d_atr3 = VertexAttribute(3, GL_FLOAT, 3 * 4, 5 * 4) //normal attribute
-        val d_vertexAttributes = arrayOf(d_atr1, d_atr2, d_atr3)
-
-        val defaultEmmitTex = Texture2D("assets/textures/defaultEmmitTex.png",true)
-        defaultEmmitTex.setTexParams(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
-        val defaultSpecTex = Texture2D("assets/textures/defaultSpecTex.png",true)
-        defaultSpecTex.setTexParams(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
-
-        val Diff = Texture2D("assets/textures/ground/rot.png", true) //rot.png
-        Diff.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
-
-        val sphereMat = Material(Diff,defaultSpecTex,defaultEmmitTex)
-        val Sphere = Renderable()
-        for (m in SphereOBJ.objects[0].meshes) {
-            val mesh = Mesh(m.vertexData, m.indexData, d_vertexAttributes,sphereMat)
-            Sphere.meshes.add(mesh)
+        if (localCam!!.fov < 25.0f){
+            localCam!!.fov = 25.0f;
         }
-        return Sphere
-    }
-    fun getIcoSphere(): Renderable{
-        val stacks = 20
-        val slices = 20
-        val PI = 3.14f
-        var helper = 0
-        //std::vector<float> positions;
-        val positions = FloatArray(60)
-        val indices = IntArray(420*6)
-        //std::vector<GLuint> indices;
-
-        // loop through stacks.
-        for (i in 0..stacks){
-            if(i + helper > stacks){
-                break}
-            val V = i.toFloat()/ stacks.toFloat()
-            val phi = V * PI;
-
-            // loop through the slices.
-            for (j in 0..slices){
-
-            val U = j.toFloat() / slices.toFloat()
-            val theta = U * (PI * 2)
-
-            // use spherical coordinates to calculate the positions.
-            val x = cos(theta) * sin(phi);
-            val y = cos(phi);
-            val z = sin(theta) * sin(phi);
-
-               if (j + helper == 60){
-                   break
-               }
-               positions[j + helper] = x
-               helper++
-               positions[j + helper] = y
-               helper++
-               positions[j + helper] = z
-               helper++
-            }
-
+        if (localCam!!.fov > 100.0f){
+            localCam!!.fov = 100.0f;
         }
-
-
-        // Calc The Index Positions
-        var i = 0;
-        helper = 0
-        while ( i < slices * stacks + slices){
-            if (i + helper >= 2520){
-                break
-            }
-            indices[i+helper] = i
-            helper++
-            indices[i+helper] = i + slices + 1
-            helper++
-            indices[i+helper] = i + slices
-            helper++
-
-            indices[i+helper] = i + slices + 1
-            helper++
-            indices[i+helper] = i
-            helper++
-            indices[i+helper] = i + 1
-            helper++
-            i++
-        }
-
-        val defaultEmmitTex = Texture2D("assets/textures/defaultEmmitTex.png",true)
-        defaultEmmitTex.setTexParams(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
-        val defaultSpecTex = Texture2D("assets/textures/defaultSpecTex.png",true)
-        defaultSpecTex.setTexParams(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
-
-        val Diff = Texture2D("assets/textures/ground/rot.png", true) //rot.png
-        Diff.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
-
-
-        val sphereMat = Material(Diff,defaultSpecTex,defaultEmmitTex)
-
-        val superSphereVAO = VertexAttribute(3, GL_FLOAT, 3 * 4, 0)     //position attribute //38505
-        val superSphereAttributes = arrayOf(superSphereVAO)
-        val superSphereMash = Mesh(positions, indices, superSphereAttributes, sphereMat)
-
-        return  Renderable(mutableListOf(superSphereMash))
+        */
     }
     private fun loadGround(): Renderable{
         val groundDiff = Texture2D("assets/textures/ground/NatureGroundTexture.png", true) //rot.png
@@ -631,9 +494,6 @@ class Scene(private val window: GameWindow) {
         val cakeDiff = Texture2D("assets/textures/cake/cake_diff.png", true)
         cakeDiff.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
         val cakeSpec = Texture2D("assets/textures/cake/cake_spec.png", true)
-        cakeSpec.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
-
-        cakeTop = Texture2D("assets/textures/cake/cake_top.png",true)
         cakeSpec.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
 
         val cakeMat = Material(cakeDiff, defaultEmmitTex, cakeSpec)
@@ -737,7 +597,7 @@ class Scene(private val window: GameWindow) {
 
     }
     fun checkCollision(colliderArray : Array<CollisionCircle>) {
-        var bAllowedToCollide = false
+        var bAllowedToCollide: Boolean
 
         for ((index, elem) in colliderArray.withIndex()) {
             for ((index2, element) in colliderArray.withIndex()) {
@@ -766,32 +626,10 @@ class Scene(private val window: GameWindow) {
             }
         }
     }
-            /*
-        System.out.println("____________DATA BLOCK START____________")
-        System.out.println("Position Dragon: " + first.getOwnerPosition())
-        System.out.println("WeitesterPunkt: " + first.getWeitesterPunkt())
-        System.out.println("Radius: " + first.getRadius())
-        System.out.println("Position Bike: " + second.getOwnerPosition())
-        System.out.println("WeitesterPunkt: " + second.getWeitesterPunkt())
-        System.out.println("Radius: " + second.getRadius())
-        System.out.println("_______ERGEBNISSE_______")
-        System.out.println("Distance:" + distance)
-        System.out.println("totalRadius: " + totalRadius)
-        * */
-        /*
-            val first = colliderArray[0]
-            val second = colliderArray[1]
 
-            val distance = first.getOwnerPosition().distance(second.getOwnerPosition())
-            val totalRadius = first.getRadius() + second.getRadius()
-
-            if (totalRadius > distance) {
-                bDoseCollide = !(first.getBIsAllowedToCollide() && second.getBIsAllowedToCollide())
-            }*/
-
-        private fun dragonToSpawn() {
-            System.out.println("Touched the tower")
-            dragon.translate(dragon.getWorldPosition().add(spawn))
-        }
-        fun cleanup() {}
+    private fun dragonToSpawn() {
+        System.out.println("Touched the tower")
+        dragon.translate(spawn.sub(dragon.getPosition()))
     }
+    fun cleanup() {}
+}
