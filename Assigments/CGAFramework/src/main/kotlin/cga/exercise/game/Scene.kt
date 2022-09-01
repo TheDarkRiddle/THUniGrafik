@@ -426,7 +426,7 @@ class Scene(private val window: GameWindow) {
         oldMouseY = ypos
     }
     fun onMouseScroll(xoffset: Double, yoffset: Double){
-        /*
+        /* Klappt nicht
         if(localCam != null){
             localCam!!.fov -= Math.toRadians(yoffset).toFloat()
         }
